@@ -115,39 +115,3 @@ Example snippet from [resources/config_DLS.json](https://github.com/axel-ponten/
 > @TODO: can we fix this by removing the extra MMCTrack during simulation? Or is it useful later and we should keep it?
 > 
 Since the initial muon is killed at production, and if the decay products contain a new muon, the MMCTrackList will contain two tracks, one from the original atmospheric muon from MuonGun, and the second one from the decay muon of the LLP. ***Beware of this when doing weighting etc.***. One easy fix is to copy the MMCTrackList in your tray and then remove the "fake" MMCTrack before adding the module that does the weighting etc. Example here: https://github.com/axel-ponten/LLP-at-IceCube/blob/main/dark-leptonic-scalar-simulation/weight-LLP-events/weight-LLP-events.py#L10 
-
-## Using HTCondor to simulate on the NPX <a name="condor"></a>
-* In practice we always produce LLP MC sets on the NPX grid.
-* Scripts for submitting found in https://github.com/axel-ponten/LLP-at-IceCube/tree/main/dark-leptonic-scalar-simulation/condor.
-
-The script `ExecuteSimulation.sh` defines config for the simulation (jobs, events per job, model details, muon spectrum, etc.) and submits the jobs. It will create a new condor execution directory where it copies relevant scripts and submits. Particularly it copies the submit template (`condor/condor_submit_template/FullSimulationLLP_template_v2.sub`) and updates config choices in there.
-
-To submit, log into the submit nodes (e.g. `ssh axelpo@submit.icecube.wisc.edu`), and then run
-```bash
-# go to the condor folder in this repo
-cd /data/user/axelpo/LLP-at-IceCube/dark-leptonic-scalar-simulation/condor
-# submit jobs. make sure to update config first
-source ExecuteSimulation.sh
-```
-
-There's also scripts with the suffix `_NoLLP`. This is just used to create a muongun MC set without LLP production, in order to check that the simulation chain works like it should.
-
-## Filtering LLP simulation to L1 and L2
-This repo contains copies from [filterscripts](https://github.com/icecube/icetray/tree/main/filterscripts) in the main icetray repo. Need some modified versions to save certain frame keys like "LLPInfo".
-
-1. Simulate online filter (level 1) with SimulateFiltering.py. Added LLPInfo to saved frames in SimulateFilter.py (the default script from i3 repo does not have it, of course).
-
-2. Simulate level 2 using process.py
-
-3. In practice trigger to L2 is done with the script `/data/user/axelpo/LLP-data/runL1L2.sh` or `/data/user/axelpo/LLP-data/condor-filtering` (submit `runL1L2.sh` on the grid) since condor LLP simulation jobs spits out many .i3 files and we want to run it on all of them simultaneously.
-
-# filtering-analysis
-* This folder has some scripts to inspect what happens to LLP simulation between trigger and filtering.
-* Includes a sanity check of apparent randomness in L2 filtering. This was found to be due to minbias filter.
-
-# spectrum-at-detector-boundary
-* spectrum-at-detector-boundary contains some scripts characterising spectrum of atmospheric muons at the detector boundary, both for L2 and trigger. This is unrelated to LLP simulation, only used to obtain single muon spectrum at the detector.
-
-# weight-LLP-events
-@TODO: update this
-* Contains script to weight the initial muongun spectrum used in LLP simulation. Does not weight according to bias of LLP cross section etc.
