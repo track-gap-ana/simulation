@@ -1,0 +1,1 @@
+to install: use pip install . or pip install --editable . (will update package with new changes)

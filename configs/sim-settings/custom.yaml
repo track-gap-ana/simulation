@@ -1,0 +1,20 @@
+outputfile: 'test.i3'
+parentdirectory: '/data/user/axelpo/'
+dirname: 'test-dirname-llp-sim/'
+
+model: Hoerandel5_atmod12_SIBYLL
+gamma: 2.0
+offset: 700.0
+emin: 10000.0
+emax: 10000000.0
+nevents: 1
+gcdfile: /data/user/axelpo/LLP-at-IceCube/dark-leptonic-scalar-simulation/resources/GeoCalibDetectorStatus_2021.Run135903.T00S1.Pass2_V1b_Snow211115.i3.gz
+config_SM: /data/user/axelpo/LLP-at-IceCube/dark-leptonic-scalar-simulation/resources/config_SM.json
+only_one_LLP: false
+OnlySaveLLPEvents: true
+both_prod_decay_inside: true
+min_LLP_length: 100.0
+LLP-model: DarkLeptonicScalar
+mass: 0.115
+eps: 5.0e-05
+bias: 3000000000.0
