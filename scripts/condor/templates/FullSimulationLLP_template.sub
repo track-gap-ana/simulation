@@ -1,0 +1,26 @@
+executable = job.sh
+
+arguments = <pythonscript> \
+ --config-file <simconfigfile> \
+ --default-config-file <defaultsimconfigfile> \
+ --nevents <nevents> \
+ --seed $(ClusterId) \
+ --nproc <njobs> \
+ --procnum $(ProcId) \
+ --clusterid $(ClusterId)
+ --current-date <currentdate>
+
+log = <logscratchdir>job.log.$(ClusterId).$(ProcId)
+output = <outputdir>job.out.$(ClusterId).$(ProcId)
+error = <errordir>job.err.$(ClusterId).$(ProcId)
+notification = never
+
++FileSystemDomain = "foo"
+transfer_input_files = <pythonscript>
+
+request_cpus = <ncpus>
+request_memory = <memory>
+request_disk = <disk>
+request_gpus = <ngpus>
+
+queue <njobs>
