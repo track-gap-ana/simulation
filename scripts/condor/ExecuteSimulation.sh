@@ -1,15 +1,15 @@
 # simulation parameters
-export NJOBS=500
-export NEVENTS=500
+export NJOBS=10
+export NEVENTS=50
 
 # environment params
 export REPODIR=/data/user/axelpo/track-gap-ana/simulation/
-export VENV=$(REPODIR).venv/bin/activate
+export VENV=$REPODIR".venv/bin/activate"
 export ICETRAYENV=/data/user/axelpo/i3/icetray-axel/build/env-shell.sh
 
 # config files
-export SIMCONFIGFILE=$(REPODIR)/configs/custom.yaml
-export DEFAULTSIMCONFIGFILE=$(REPODIR)/configs/default.yaml
+export SIMCONFIGFILE=$REPODIR/configs/custom.yaml
+export DEFAULTSIMCONFIGFILE=$REPODIR/configs/default.yaml
 
 # job file
 export PYTHONSCRIPT=$(pwd)/llp_sim_job.py
@@ -29,7 +29,7 @@ export CONDORSCRIPT=$(pwd)"/templates/FullSimulationLLP_template.sub"
 export JOBFILETEMPLATE=$(pwd)"/templates/job_template.sh"
 
 #create exepath to avoid condor incident
-export EXEDIR="condor_exe_dirs/condor-$(date +%Y%m%d-%H%M%S)"
+export EXEDIR=$(pwd)"/condor_exe_dirs/condor-$(date +%Y%m%d-%H%M%S)"
 mkdir $EXEDIR
 
 #transform condor script
