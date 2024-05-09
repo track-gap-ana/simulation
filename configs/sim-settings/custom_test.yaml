@@ -15,3 +15,6 @@ LLP-model: DarkLeptonicScalar
 mass: 0.115
 eps: 5.0e-05
 bias: 3000000000.0
+
+parentdir: "/data/user/axelpo/"
+dirname: "test-new-sim-scripts/"
