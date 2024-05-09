@@ -15,7 +15,7 @@ import icecube.MuonGun
 import icecube.dataio
 import json
 import numpy as np
-from I3PropagatorServicePROPOSAL_LLP import I3PropagatorServicePROPOSAL_LLP
+from .I3PropagatorServicePROPOSAL_LLP import I3PropagatorServicePROPOSAL_LLP
 
 @icecube.icetray.traysegment
 def PropagateMuonsLLP(tray, name,

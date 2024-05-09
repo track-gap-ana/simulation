@@ -1,6 +1,3 @@
-import argparse
-import json
-import shutil
 import os
 import os.path
 from datetime import datetime
@@ -14,13 +11,11 @@ import icecube.phys_services
 
 from icecube.simprod.util import SetGPUEnvironmentVariables
 
-from icecube.simprod.util.simprodtray import RunI3Tray
-
 from icecube.simprod.segments import GenerateCosmicRayMuons, GenerateNaturalRateMuons
 
 from icecube.dataclasses import *
 from icecube import clsim
-from PropagateMuonsLLP import PropagateMuonsLLP
+from .PropagateMuonsLLP import PropagateMuonsLLP
 from icecube.simprod import segments
 
 from icecube.production_histograms import ProductionHistogramModule
