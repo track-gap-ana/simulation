@@ -74,22 +74,23 @@ def configure_tray(tray, params, stats, logger):
                         use_inner_cylinder=params['deepcore'])
 
     ### PROPOSAL WITH LLP INTERACTION ###
-    tray.AddSegment(PropagateMuonsLLP,
-                    "propagator",
-                    RandomService          = tray.context["I3RandomService"],
-                    InputMCTreeName        = "I3MCTree_preMuonProp",
-                    OutputMCTreeName       = "I3MCTree",
-                    PROPOSAL_config_SM     = params["config_SM"],
-                    PROPOSAL_config_LLP    = params["config_LLP"],
-                    OnlySaveLLPEvents      = params["OnlySaveLLPEvents"],
-                    only_one_LLP           = params["only_one_LLP"],
-                    nevents                = params["nevents"],
-                    gcdfile                = params["gcdfile"],
-                    both_prod_decay_inside = params["both_prod_decay_inside"],
-                    min_LLP_length         = params["min_LLP_length"],
-                    entry_margin           = params["entry_margin"],
-                    exit_margin            = params["exit_margin"],
-                   )
+    if params["propagatemuons"]:
+        tray.AddSegment(PropagateMuonsLLP,
+                        "propagator",
+                        RandomService          = tray.context["I3RandomService"],
+                        InputMCTreeName        = "I3MCTree_preMuonProp",
+                        OutputMCTreeName       = "I3MCTree",
+                        PROPOSAL_config_SM     = params["config_SM"],
+                        PROPOSAL_config_LLP    = params["config_LLP"],
+                        OnlySaveLLPEvents      = params["OnlySaveLLPEvents"],
+                        only_one_LLP           = params["only_one_LLP"],
+                        nevents                = params["nevents"],
+                        gcdfile                = params["gcdfile"],
+                        both_prod_decay_inside = params["both_prod_decay_inside"],
+                        min_LLP_length         = params["min_LLP_length"],
+                        entry_margin           = params["entry_margin"],
+                        exit_margin            = params["exit_margin"],
+                    )
 
     
     if params["use-clsim"]:
