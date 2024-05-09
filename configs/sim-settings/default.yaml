@@ -10,7 +10,7 @@ icemodel: spice_3.2
 holeiceparametrization: $I3_SRC/ice-models/resources/models/ANGSENS/angsens/as.h2-50cm
 oversize: 1
 efficiency: 1.0
-propagatemuons: true
+propagatephotons: true
 photonseriesname: I3MCPESeriesMap
 gpu: null
 usegpus: false

@@ -8,7 +8,7 @@ gcdfile: /data/user/axelpo/LLP-at-IceCube/dark-leptonic-scalar-simulation/resour
 config_SM: /data/user/axelpo/LLP-at-IceCube/dark-leptonic-scalar-simulation/resources/config_SM.json
 only_one_LLP: false
 OnlySaveLLPEvents: true
-propagatemuons: false
+propagatephotons: false
 both_prod_decay_inside: true
 min_LLP_length: 100.0
 LLP-model: DarkLeptonicScalar

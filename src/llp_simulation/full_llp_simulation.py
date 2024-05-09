@@ -86,58 +86,59 @@ def configure_tray(tray, params, stats, logger):
                         use_inner_cylinder=params['deepcore'])
 
     ### PROPOSAL WITH LLP INTERACTION ###
-    if params["propagatemuons"]:
-        tray.AddSegment(PropagateMuonsLLP,
-                        "propagator",
-                        RandomService          = tray.context["I3RandomService"],
-                        InputMCTreeName        = "I3MCTree_preMuonProp",
-                        OutputMCTreeName       = "I3MCTree",
-                        PROPOSAL_config_SM     = params["config_SM"],
-                        PROPOSAL_config_LLP    = params["config_LLP"],
-                        OnlySaveLLPEvents      = params["OnlySaveLLPEvents"],
-                        only_one_LLP           = params["only_one_LLP"],
-                        nevents                = params["nevents"],
-                        gcdfile                = params["gcdfile"],
-                        both_prod_decay_inside = params["both_prod_decay_inside"],
-                        min_LLP_length         = params["min_LLP_length"],
-                        entry_margin           = params["entry_margin"],
-                        exit_margin            = params["exit_margin"],
-                    )
-    else:
-        return
+    tray.AddSegment(PropagateMuonsLLP,
+                    "propagator",
+                    RandomService          = tray.context["I3RandomService"],
+                    InputMCTreeName        = "I3MCTree_preMuonProp",
+                    OutputMCTreeName       = "I3MCTree",
+                    PROPOSAL_config_SM     = params["config_SM"],
+                    PROPOSAL_config_LLP    = params["config_LLP"],
+                    OnlySaveLLPEvents      = params["OnlySaveLLPEvents"],
+                    only_one_LLP           = params["only_one_LLP"],
+                    nevents                = params["nevents"],
+                    gcdfile                = params["gcdfile"],
+                    both_prod_decay_inside = params["both_prod_decay_inside"],
+                    min_LLP_length         = params["min_LLP_length"],
+                    entry_margin           = params["entry_margin"],
+                    exit_margin            = params["exit_margin"],
+                )
     
-    if params["use-clsim"]:
-        ### PHOTONS WITH CLSIM ###
-        tray.AddSegment(clsim.I3CLSimMakeHits, "makeCLSimHits",
-                        GCDFile=params['gcdfile'],
-                        RandomService=tray.context["I3RandomService"],
-                        UseGPUs=params['usegpus'],
-                        UseOnlyDeviceNumber=params['useonlydevicenumber'],
-                        UseCPUs=not params['usegpus'],
-                        IceModelLocation=os.path.join(params['icemodellocation'], params['icemodel']),
-                        DOMEfficiency=params['efficiency'],
-                        UseGeant4=False,
-                        DOMOversizeFactor=params['oversize'],
-                        MCTreeName="I3MCTree",
-                        MCPESeriesName=params['photonseriesname'],
-                        PhotonSeriesName=params['rawphotonseriesname'],
-                        HoleIceParameterization=params['holeiceparametrization'])
+    if params["propagatephotons"]:
+        if params["use-clsim"]:
+            ### PHOTONS WITH CLSIM ###
+            tray.AddSegment(clsim.I3CLSimMakeHits, "makeCLSimHits",
+                            GCDFile=params['gcdfile'],
+                            RandomService=tray.context["I3RandomService"],
+                            UseGPUs=params['usegpus'],
+                            UseOnlyDeviceNumber=params['useonlydevicenumber'],
+                            UseCPUs=not params['usegpus'],
+                            IceModelLocation=os.path.join(params['icemodellocation'], params['icemodel']),
+                            DOMEfficiency=params['efficiency'],
+                            UseGeant4=False,
+                            DOMOversizeFactor=params['oversize'],
+                            MCTreeName="I3MCTree",
+                            MCPESeriesName=params['photonseriesname'],
+                            PhotonSeriesName=params['rawphotonseriesname'],
+                            HoleIceParameterization=params['holeiceparametrization'])
+        else:
+            ### PHOTONS WITH PPC
+            tray.AddSegment(segments.PPC.PPCTraySegment, "ppc_photons",
+                            GPU=params['gpu'],
+                            UseGPUs=params['usegpus'],
+                            DOMEfficiency=params['efficiency'],
+                            DOMOversizeFactor=params['oversize'],
+                            IceModelLocation=params['icemodellocation'],
+                            HoleIceParameterization=params['holeiceparametrization'],
+                            IceModel=params['icemodel'],
+                            volumecyl=params['volumecyl'],
+                            gpulib=params['gpulib'],
+                            InputMCTree=params['mctreename'],
+                            keep_empty_events=params['keepemptyevents'],
+                            MCPESeriesName=params['photonseriesname'],
+                            tempdir=params['tempdir'])
     else:
-        ### PHOTONS WITH PPC
-        tray.AddSegment(segments.PPC.PPCTraySegment, "ppc_photons",
-                        GPU=params['gpu'],
-                        UseGPUs=params['usegpus'],
-                        DOMEfficiency=params['efficiency'],
-                        DOMOversizeFactor=params['oversize'],
-                        IceModelLocation=params['icemodellocation'],
-                        HoleIceParameterization=params['holeiceparametrization'],
-                        IceModel=params['icemodel'],
-                        volumecyl=params['volumecyl'],
-                        gpulib=params['gpulib'],
-                        InputMCTree=params['mctreename'],
-                        keep_empty_events=params['keepemptyevents'],
-                        MCPESeriesName=params['photonseriesname'],
-                        tempdir=params['tempdir'])
+        logger.info("Skipping photon propagation.")
+        return
 
     tray.AddModule("MPHitFilter", "hitfilter",
                    HitOMThreshold=1,
