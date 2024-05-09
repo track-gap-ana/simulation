@@ -3,20 +3,31 @@ import os.path
 from datetime import datetime
 import icecube
 
-from icecube import icetray
+from icecube import icetray, dataclasses, simclasses, dataio
 import icecube.icetray
 import icecube.dataclasses
 import icecube.dataio
 import icecube.phys_services
 
-from icecube.simprod.util import SetGPUEnvironmentVariables
+from icecube.simprod.util import ReadI3Summary, WriteI3Summary
+from icecube.simprod.util import CombineHits, DrivingTime, SetGPUEnvironmentVariables
 
-from icecube.simprod.segments import GenerateCosmicRayMuons, GenerateNaturalRateMuons
+from icecube.icetray import I3Tray, I3Units
+from icecube.simprod.util import BasicCounter
+from icecube.simprod.segments import GenerateCosmicRayMuons, GenerateNaturalRateMuons, PPC
 
 from icecube.dataclasses import *
 from icecube import clsim
+from icecube import polyplopia
+from icecube import PROPOSAL
 from .PropagateMuonsLLP import PropagateMuonsLLP
+from icecube.icetray import I3Frame
 from icecube.simprod import segments
+from icecube import phys_services
+from icecube import sim_services
+from icecube import vuvuzela
+from icecube import DOMLauncher
+from icecube import trigger_sim
 
 from icecube.production_histograms import ProductionHistogramModule
 from icecube.production_histograms.histogram_modules.simulation.pmt_response import PMTResponseModule
@@ -26,6 +37,7 @@ from icecube.production_histograms.histograms.simulation.noise_occupancy import 
 from icecube.production_histograms.histogram_modules.simulation.mctree_primary import I3MCTreePrimaryModule
 from icecube.production_histograms.histogram_modules.simulation.mctree import I3MCTreeModule
 from icecube.production_histograms.histogram_modules.simulation.mcpe_module import I3MCPEModule
+
 
 def configure_tray(tray, params, stats, logger):
     """
