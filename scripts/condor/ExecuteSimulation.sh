@@ -33,24 +33,24 @@ export EXEDIR=$(pwd)"/condor_exe_dirs/condor-$(date +%Y%m%d-%H%M%S)"
 mkdir $EXEDIR
 
 #transform condor script
-sed -e 's/<pythonscript>/'$PYTHONSCRIPT'/g' \
-    -e 's/<simconfigfile>/'$SIMCONFIGFILE'/g' \
-    -e 's/<defaultsimconfigfile>/'$DEFAULTSIMCONFIGFILE'/g' \
-    -e 's/<logscratchdir>/'$LOGSCRATCHDIR'/g' \
-    -e 's/<outputdir>/'$OUTPUTDIR'/g' \
-    -e 's/<errordir>/'$ERRORDIR'/g' \
-    -e 's/<ncpus>/'$NCPUS'/g' \
-    -e 's/<memory>/'$MEMORY'/g' \
-    -e 's/<disk>/'$DISK'/g' \
-    -e 's/<ngpus>/'$NGPUS'/g' \
-    -e 's/<njobs>/'$NJOBS'/g' \
-    -e 's/<currentdate>/'$CURRENTDATE'/g'
-    -e 's/<nevents>/'$NEVENTS'/g' \
+sed -e 's#<pythonscript>#'$PYTHONSCRIPT'#g' \
+    -e 's#<simconfigfile>#'$SIMCONFIGFILE'#g' \
+    -e 's#<defaultsimconfigfile>#'$DEFAULTSIMCONFIGFILE'#g' \
+    -e 's#<logscratchdir>#'$LOGSCRATCHDIR'#g' \
+    -e 's#<outputdir>#'$OUTPUTDIR'#g' \
+    -e 's#<errordir>#'$ERRORDIR'#g' \
+    -e 's#<ncpus>#'$NCPUS'#g' \
+    -e 's#<memory>#'$MEMORY'#g' \
+    -e 's#<disk>#'$DISK'#g' \
+    -e 's#<ngpus>#'$NGPUS'#g' \
+    -e 's#<njobs>#'$NJOBS'#g' \
+    -e 's#<currentdate>#'$CURRENTDATE'#g' \
+    -e 's#<nevents>#'$NEVENTS'#g' \
     $CONDORSCRIPT > "$EXEDIR/condor.submit";
 
 # transform job script
-sed -e 's/<icetrayenv>/'$ICETRAYENV'/g' \
-    -e 's/<venv>/'$VENV'/g' \
+sed -e 's#<icetrayenv>#'$ICETRAYENV'#g' \
+    -e 's#<venv>#'$VENV'#g' \
     $JOBFILETEMPLATE > "$EXEDIR/job.sh";
 
 #call condor skript
