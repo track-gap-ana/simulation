@@ -53,7 +53,7 @@ def process_config_dict(params,
 
     # add all relevant paths to same folder?
     directory_path = params["parentdir"] + params["dirname"]
-    os.makedirs(directory_path)
+    os.makedirs(directory_path, exist_ok=True)
     if add_parent_dir:
         # add directory path to all files
         params['outputfile']        = directory_path + params['outputfile']
