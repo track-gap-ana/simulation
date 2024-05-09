@@ -15,7 +15,7 @@ photonseriesname: I3MCPESeriesMap
 gpu: null
 usegpus: false
 outputfile: ''
-parentdirectory: ''
+parentdir: ''
 dirname: ''
 model: Hoerandel5_atmod12_SIBYLL
 gamma: 2.0
