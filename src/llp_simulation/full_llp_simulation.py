@@ -92,6 +92,8 @@ def configure_tray(tray, params, stats, logger):
                     gcdfile                = params["gcdfile"],
                     both_prod_decay_inside = params["both_prod_decay_inside"],
                     min_LLP_length         = params["min_LLP_length"],
+                    entry_margin           = params["entry_margin"],
+                    exit_margin            = params["exit_margin"],
                    )
 
     
