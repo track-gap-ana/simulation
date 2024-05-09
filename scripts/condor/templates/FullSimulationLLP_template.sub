@@ -7,8 +7,8 @@ arguments = <pythonscript> \
  --seed $(ClusterId) \
  --nproc <njobs> \
  --procnum $(ProcId) \
- --clusterid $(ClusterId)
- --current-date <currentdate>
+ --clusterid $(ClusterId) \
+ --current-date <currentdate> \
 
 log = <logscratchdir>job.log.$(ClusterId).$(ProcId)
 output = <outputdir>job.out.$(ClusterId).$(ProcId)
