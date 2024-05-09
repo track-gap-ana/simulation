@@ -30,7 +30,7 @@ with open(args["default-config-file"], "r") as file:
     default_config = yaml.load(file, Loader=yaml.FullLoader)
 # fill customconfig with default config
 custom_config = default_config.copy().update(custom_config)
-
+print(custom_config)
 # override nevents
 custom_config["nevents"] = args["nevents"]
 custom_config["seed"]    = args["seed"]
