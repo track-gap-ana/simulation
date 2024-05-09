@@ -54,6 +54,7 @@ def create_config_dict(custom_params,
 
     # add all relevant paths to same folder?
     directory_path = params["parentdir"] + params["dirname"]
+    os.mkdir(directory_path)
     if add_parent_dir:
         # add directory path to all files
         params['outputfile']        = directory_path + params['outputfile']
