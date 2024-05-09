@@ -45,6 +45,8 @@ only_one_LLP: true
 OnlySaveLLPEvents: true
 both_prod_decay_inside: true
 min_LLP_length: 100.0
+entry_margin: 100.0 # for good LLP check. min. depth in detector for prod?
+exit_margin: 100.0 # for good LLP check. min. for decay
 LLP-model: DarkLeptonicScalar
 mass: 0.115
 eps: 5.0e-05

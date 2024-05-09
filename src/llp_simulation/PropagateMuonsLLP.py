@@ -32,6 +32,8 @@ def PropagateMuonsLLP(tray, name,
                    gcdfile = "",
                    both_prod_decay_inside = True,
                    min_LLP_length = 0,
+                   entry_margin = 0,
+                   exit_margin = 0,
                    **kwargs):
     r"""Propagate muons.
 
@@ -107,6 +109,8 @@ def PropagateMuonsLLP(tray, name,
              GCDFile = gcdfile,
              both_prod_decay_inside = both_prod_decay_inside,
              min_LLP_length = min_LLP_length,
+             entry_margin = entry_margin,
+             exit_margin = exit_margin,
             )
     
     return
@@ -210,8 +214,15 @@ class LLPEventCounter(icetray.I3Module):
         self.gcdFile = ""
         self.AddParameter("GCDFile", "GCD file which defines the in-ice volume", self.gcdFile)
 
-        self.padding = 60. * icetray.I3Units.m # default 60 m padding
+        self.padding = 0. * icetray.I3Units.m # default no padding
         self.AddParameter("Padding", "", self.padding)
+        
+        # margins for LLP production and decay points
+        self.entry_margin = 0. * icetray.I3Units.m
+        self.AddParameter("entry_margin", "", self.entry_margin)
+        
+        self.exit_margin = 0. * icetray.I3Units.m
+        self.AddParameter("exit_margin", "", self.exit_margin)
         
         self.min_LLP_length = 0.
         self.AddParameter("min_LLP_length", "minimum length for LLP to be good", self.min_LLP_length)
@@ -225,6 +236,8 @@ class LLPEventCounter(icetray.I3Module):
         self.min_LLP_length         = self.GetParameter("min_LLP_length")
         self.gcdFile                = self.GetParameter("GCDFile") # create surface for detector volume
         self.padding                = self.GetParameter("Padding") # padding for gcd file
+        self.entry_margin           = self.GetParameter("entry_margin") # how deep inside the detector the LLP production point must be
+        self.exit_margin            = self.GetParameter("exit_margin") # how deep inside the detector the LLP decay point must be
         self.both_prod_decay_inside = self.GetParameter("both_prod_decay_inside")
 
         # use cylinder for detector volume if no gcd file
@@ -260,16 +273,22 @@ class LLPEventCounter(icetray.I3Module):
         prod_intersection  = self.surface.intersection(production, direction) # negative value means intersection behind point, positive means in front
         decay_intersection = self.surface.intersection(decay,      direction)
         
+        # add margins to the production and decay points
+        prod_intersection.first  += self.entry_margin
+        prod_intersection.second -= self.exit_margin
+        decay_intersection.first  += self.entry_margin
+        decay_intersection.second -= self.exit_margin
+        
+        # inside?
+        prod_inside = (prod_intersection.first > 0 and prod_intersection.second < 0)
+        decay_inside = (decay_intersection.first > 0 and decay_intersection.second < 0)
+        
         good_LLP = False
         if self.both_prod_decay_inside:
-            if prod_intersection.first*prod_intersection.second < 0 and decay_intersection.first*decay_intersection.second < 0:
+            if prod_inside and decay_inside:
                 good_LLP = True
         else:
-            if prod_intersection.first*prod_intersection.second < 0 or decay_intersection.first*decay_intersection.second < 0:
+            if prod_inside or decay_inside:
                 good_LLP = True
             
         return good_LLP
-            
-        
-            
-        
