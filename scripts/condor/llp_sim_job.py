@@ -29,8 +29,9 @@ with open(args["config-file"], "r") as file:
 with open(args["default-config-file"], "r") as file:
     default_config = yaml.load(file, Loader=yaml.FullLoader)
 # fill customconfig with default config
-custom_config = default_config.copy().update(custom_config)
-print(custom_config)
+default_config.update(custom_config)
+custom_config = default_config
+
 # override nevents
 custom_config["nevents"] = args["nevents"]
 custom_config["seed"]    = args["seed"]
@@ -57,8 +58,8 @@ parentdirectory = datadir + simsetdir
 custom_config["parentdir"] = parentdirectory
 custom_config["dirname"] = "LLPSimulation." + str(args["clusterid"]) + "." + str(args["procnum"]) + "/"
 
-# create config dictionary with default and custom config
-params = llp_simulation.utils.create_config_dict(custom_config, default_config)
+# add paths, create LLP proposal config, etc.
+params = llp_simulation.utils.process_config_dict(custom_config, default_config)
 
 # dump the config dictionary to a yaml file in the output directory
 llp_simulation.utils.dump_config_dict(params)

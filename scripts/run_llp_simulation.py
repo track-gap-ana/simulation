@@ -14,7 +14,9 @@ parser.add_argument('--custom-config', dest="custom-config",
 args = vars(parser.parse_args()) # dict
 
 # create config dictionary
-params = llp_simulation.utils.create_config_dict_from_path(args["custom-config"], args["default-config"])
+params = llp_simulation.utils.create_config_dict_from_path(args["custom-config"],
+                                                           args["default-config"],
+                                                           process_config=True)
 
 # dump the config dictionary to a yaml file in the output directory
 llp_simulation.utils.dump_config_dict(params)

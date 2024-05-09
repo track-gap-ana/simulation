@@ -5,6 +5,7 @@ import shutil
 
 def create_config_dict_from_path(custom_config,
                   default_config="../configs/sim-settings/default.yaml",
+                  process_config=True,
                   expand_vars=True, # expand $I3_SRC etc.
                   add_parent_dir=True, # add parent dir to all relevant paths
                   create_PROPOSAL_LLP_config=True, # PROPOSAL config file from parameters
@@ -20,27 +21,25 @@ def create_config_dict_from_path(custom_config,
     with open(custom_config) as file:
         custom_params = yaml.safe_load(file)
     
-    # call create config dict with dictionaries
-    return create_config_dict(custom_params,
-                              params,
-                              expand_vars,
-                              add_parent_dir,
-                              create_PROPOSAL_LLP_config,
-                              use_default_filename)
+    params.update(custom_params)
     
-def create_config_dict(custom_params,
-                  default_params,
+    if process_config:
+        # call create config dict with dictionaries
+        return process_config_dict(params,
+                                expand_vars,
+                                add_parent_dir,
+                                create_PROPOSAL_LLP_config,
+                                use_default_filename)
+    else:
+        return params
+    
+def process_config_dict(params,
                   expand_vars=True, # expand $I3_SRC etc.
                   add_parent_dir=True, # add parent dir to all relevant paths
                   create_PROPOSAL_LLP_config=True, # PROPOSAL config file from parameters
                   use_default_filename=True # use default *.i3.gz filename
                   ):
-    # load default config file
-    # @TODO: assert it has everything it needs
-    params = default_params.copy()
-
-    # override with custom config
-    params.update(custom_params)
+    # @TODO: assert params has everything it needs
 
     # expand paths with environment variables
     if expand_vars:
