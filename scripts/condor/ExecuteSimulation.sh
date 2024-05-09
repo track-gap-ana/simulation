@@ -9,7 +9,7 @@ export ICETRAYENV=/data/user/axelpo/i3/icetray-axel/build/env-shell.sh
 
 # config files
 export SIMCONFIGFILE=$REPODIR"configs/sim-settings/custom.yaml"
-export DEFAULTSIMCONFIGFILE=$REPODIR"configs/sim-settings/default.yaml"
+export DEFAULTSIMCONFIGFILE=$REPODIR"configs/sim-settings/default_condor.yaml"
 
 # job file
 export PYTHONSCRIPT=$(pwd)/llp_sim_job.py
