@@ -28,6 +28,8 @@ with open(args["config-file"], "r") as file:
     custom_config = yaml.load(file, Loader=yaml.FullLoader)
 with open(args["default-config-file"], "r") as file:
     default_config = yaml.load(file, Loader=yaml.FullLoader)
+# fill customconfig with default config
+custom_config = default_config.copy().update(custom_config)
 
 # override nevents
 custom_config["nevents"] = args["nevents"]
@@ -43,8 +45,8 @@ bias       = str(custom_config["bias"])
 minlength  = str(custom_config["min_LLP_length"])
 nevents    = float(custom_config["nevents"])
 njobs      = float(custom_config["nproc"])
-fluxemin   = str(custom_config["fluxemin"])
-fluxemax   = str(custom_config["fluxemax"])
+fluxemin   = str(custom_config["emin"])
+fluxemax   = str(custom_config["emax"])
 
 # create parent directory
 datadir = args["datadir"]
