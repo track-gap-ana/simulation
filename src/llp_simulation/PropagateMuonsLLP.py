@@ -69,7 +69,7 @@ def PropagateMuonsLLP(tray, name,
         icecube.icetray.logging.log_warn(
             "The CylinderLength now should be set in the configuration file in the detector configuration")
     propagator_map, muon_propagator = make_propagators(tray, PROPOSAL_config_SM, PROPOSAL_config_LLP, **kwargs)
-
+    print("here3")
     if SaveState:
         rng_state = InputMCTreeName+"_RNGState"
     else:
@@ -84,6 +84,7 @@ def PropagateMuonsLLP(tray, name,
     tray.Add(lambda frame : muon_propagator.reset(), 
              Streams=[icecube.icetray.I3Frame.DAQ])
 
+    print("here4")
     tray.AddModule("I3PropagatorModule", name+"_propagator",
                    PropagatorServices=propagator_map,
                    RandomService=RandomService,
@@ -91,6 +92,7 @@ def PropagateMuonsLLP(tray, name,
                    OutputMCTreeName=OutputMCTreeName,
                    RNGStateName=rng_state)
 
+    print("here6")
     # write LLP information to frame
     tray.Add(lambda frame : muon_propagator.write_LLPInfo(frame), 
              Streams=[icecube.icetray.I3Frame.DAQ])
@@ -152,6 +154,7 @@ def make_propagators(tray,
     """
     from icecube.icetray import I3Units
 
+    print("here0")
     cascade_propagator = icecube.cmc.I3CascadeMCService(
         icecube.phys_services.I3GSLRandomService(1))  # Dummy RNG
     cascade_propagator.SetEnergyThresholdSimulation(1*I3Units.PeV)
@@ -161,7 +164,9 @@ def make_propagators(tray,
         cascade_propagator.SetThresholdSplit(1*I3Units.PeV)
     cascade_propagator.SetMaxMuons(MaxMuons)
     
+    print("here1")
     muon_propagator = I3PropagatorServicePROPOSAL_LLP(PROPOSAL_config_SM, PROPOSAL_config_LLP, only_one_LLP)
+    print("here2")
     propagator_map = icecube.sim_services.I3ParticleTypePropagatorServiceMap()
 
     for pt in "MuMinus", "MuPlus", "TauMinus", "TauPlus":
