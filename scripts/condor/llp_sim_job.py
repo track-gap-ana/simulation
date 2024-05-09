@@ -24,9 +24,9 @@ parser.add_argument('--datadir', dest="datadir", type=str, default="/data/user/a
 args = vars(parser.parse_args()) # dict
 
 # get config dict
-with open(args["custom-config"], "r") as file:
+with open(args["config-file"], "r") as file:
     custom_config = yaml.load(file, Loader=yaml.FullLoader)
-with open(args["default-config"], "r") as file:
+with open(args["default-config-file"], "r") as file:
     default_config = yaml.load(file, Loader=yaml.FullLoader)
 
 # override nevents
