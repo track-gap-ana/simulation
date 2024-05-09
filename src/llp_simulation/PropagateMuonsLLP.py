@@ -61,6 +61,7 @@ def PropagateMuonsLLP(tray, name,
         :func:`icecube.simprod.segments.make_propagator`.
 
     """
+    print("PropagateMuonsLLP")
     if CylinderRadius is not None:
         icecube.icetray.logging.log_warn(
             "The CylinderRadius now should be set in the configuration file in the detector configuration")
@@ -103,6 +104,7 @@ def PropagateMuonsLLP(tray, name,
     tray.AddModule(add_empty_tracklist, name+"_add_empty_tracklist",
                 Streams=[icecube.icetray.I3Frame.DAQ])
     
+    print("here6")
     # fix MMCTrackList "bug" that adds MMCTrack for LLP decay muons (PROPOSAL doesn't know if a muon is from LLP or not)
     def FixMMCTrackListLLP(frame):
         if "MMCTrackListLLP" in frame:
