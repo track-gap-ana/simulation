@@ -103,7 +103,8 @@ def configure_tray(tray, params, stats, logger):
                         entry_margin           = params["entry_margin"],
                         exit_margin            = params["exit_margin"],
                     )
-
+    else:
+        return
     
     if params["use-clsim"]:
         ### PHOTONS WITH CLSIM ###
