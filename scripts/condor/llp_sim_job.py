@@ -6,6 +6,8 @@ from icecube import icetray
 from icecube.simprod.util.simprodtray import RunI3Tray
 
 import llp_simulation
+import llp_simulation.utils
+import llp_simulation.full_llp_simulation
 
 # Create the argument parser
 parser = argparse.ArgumentParser(description='LLP condor job simulation')
