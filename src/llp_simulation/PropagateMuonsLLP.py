@@ -99,10 +99,29 @@ def PropagateMuonsLLP(tray, name,
         if "MMCTrackList" not in frame:
             frame["MMCTrackList"] = icecube.simclasses.I3MMCTrackList()
         return True
-
-    tray.AddModule(add_empty_tracklist, name+"_add_empty_tracklist",
-                   Streams=[icecube.icetray.I3Frame.DAQ])
     
+    tray.AddModule(add_empty_tracklist, name+"_add_empty_tracklist",
+                Streams=[icecube.icetray.I3Frame.DAQ])
+    
+    # fix MMCTrackList "bug" that adds MMCTrack for LLP decay muons (PROPOSAL doesn't know if a muon is from LLP or not)
+    def FixMMCTrackListLLP(frame):
+        if "MMCTrackListLLP" in frame:
+            tracklist_LLP         = frame["MMCTrackListLLP"]
+            # highest energy muon is the initial muon from muongun
+            initial_muon          = max(tracklist_LLP, key = lambda track : track.Ei)
+            frame["MMCTrackList"] = icecube.simclasses.I3MMCTrackList([initial_muon])
+            return True
+        else:
+            print("no MMCTrackListLLP in frame!")
+            exit()
+            return False
+    # copy over the "buggy" mmctracklist to a new key
+    tray.Add(lambda frame: frame.Stop == icetray.I3Frame.DAQ) # since passing streams didn't work for copy and delete
+    tray.AddModule("Copy", "copy", Keys = ["MMCTrackList", "MMCTrackListLLP"], If = lambda f: f.Stop == icetray.I3Frame.DAQ)
+    tray.AddModule("Delete", "delete", Keys = ["MMCTrackList"], If = lambda f: f.Stop == icetray.I3Frame.DAQ)
+    tray.Add(FixMMCTrackListLLP, streams=[icetray.I3Frame.DAQ])
+
+
     tray.Add(LLPEventCounter,
              nevents = nevents,
              only_save_LLP = OnlySaveLLPEvents,
