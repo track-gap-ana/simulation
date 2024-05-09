@@ -3,6 +3,8 @@ from icecube import icetray
 from icecube.simprod.util.simprodtray import RunI3Tray
 
 import llp_simulation
+import llp_simulation.utils
+import llp_simulation.full_llp_simulation
 import argparse
 
 # Create the argument parser
