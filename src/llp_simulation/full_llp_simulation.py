@@ -50,6 +50,7 @@ def configure_tray(tray, params, stats, logger):
         stats (dict): dictionary that collects run-time stats
         logger (logging.Logger): the logger for this script
     """
+    print("here1")
     if params['gpu'] is not None and params['usegpus']:
         SetGPUEnvironmentVariables(params['gpu'])
 
@@ -57,6 +58,7 @@ def configure_tray(tray, params, stats, logger):
                    Prefix=params['gcdfile'],
                    Stream=icecube.icetray.I3Frame.DAQ)
 
+    print("here2")
     ### MUONS WITH MUONGUN ###
     if params['natural_rate']:
         tray.AddSegment(GenerateNaturalRateMuons, "muongun",
@@ -85,6 +87,7 @@ def configure_tray(tray, params, stats, logger):
                         inner_cylinder_z=params['z_dc'],
                         use_inner_cylinder=params['deepcore'])
 
+    print("here3")
     ### PROPOSAL WITH LLP INTERACTION ###
     tray.AddSegment(PropagateMuonsLLP,
                     "propagator",
@@ -137,6 +140,7 @@ def configure_tray(tray, params, stats, logger):
                             MCPESeriesName=params['photonseriesname'],
                             tempdir=params['tempdir'])
     else:
+        print("here4")
         logger.info("Skipping photon propagation.")
         return
 
