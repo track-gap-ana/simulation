@@ -10,9 +10,9 @@ arguments = <pythonscript> \
  --clusterid $(ClusterId) \
  --current-date <currentdate> \
 
-log = <logscratchdir>batch.$(ClusterId)/job.log.$(ClusterId).$(ProcId)
-output = <outputdir>batch.$(ClusterId)/job.out.$(ClusterId).$(ProcId)
-error = <errordir>batch.$(ClusterId)/job.err.$(ClusterId).$(ProcId)
+log = <logscratchdir>job.log.$(ClusterId).$(ProcId)
+output = <outputdir>job.out.$(ClusterId).$(ProcId)
+error = <errordir>job.err.$(ClusterId).$(ProcId)
 notification = never
 
 +FileSystemDomain = "foo"
