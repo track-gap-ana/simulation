@@ -40,6 +40,10 @@ def process_config_dict(params,
                   use_default_filename=True # use default *.i3.gz filename
                   ):
     # @TODO: assert params has everything it needs
+    
+    # cast and assert types
+    cast_types(params)
+    assert_types(params)
 
     # expand paths with environment variables
     if expand_vars:
@@ -89,6 +93,24 @@ def process_config_dict(params,
             shutil.copy(params["config_LLP"], directory_path)
 
     return params
+
+
+def cast_types(params):
+    # @TODO: fill in with all types
+    try:
+        params["mass"] = float(params["mass"])
+        params["eps"] = float(params["eps"])
+        params["bias"] = float(params["bias"])
+        params["nevents"] = int(params["nevents"])
+    except (ValueError, TypeError):
+        raise ValueError("Invalid parameter types")
+
+def assert_types(params):
+    # @TODO: fill in with all types
+    assert isinstance(params["mass"], (float)), "mass should be a numeric value"
+    assert isinstance(params["eps"], (float)), "eps should be a numeric value"
+    assert isinstance(params["bias"], (float)), "bias should be a numeric value"
+    assert isinstance(params["nevents"], int), "nevents should be an integer"
 
 def dump_config_dict(params, outputdir=None, outputname="sim_settings.yaml"):
     # write summary yaml file in directory_path
