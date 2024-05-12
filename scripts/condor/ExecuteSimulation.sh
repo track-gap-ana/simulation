@@ -1,6 +1,6 @@
 # simulation parameters
-export NJOBS=5
-export NEVENTS=10
+export NJOBS=100
+export NEVENTS=100
 
 # environment params
 export REPODIR=/data/user/axelpo/track-gap-ana/simulation/
@@ -8,7 +8,7 @@ export VENV=$REPODIR".venv/bin/activate"
 export ICETRAYENV=/data/user/axelpo/i3/icetray-axel/build/env-shell.sh
 
 # config files
-export SIMCONFIGFILE=$REPODIR"configs/sim-settings/custom.yaml"
+export SIMCONFIGFILE=$REPODIR"configs/sim-settings/custom_condor.yaml"
 export DEFAULTSIMCONFIGFILE=$REPODIR"configs/sim-settings/default_condor.yaml"
 
 # job file
@@ -19,9 +19,9 @@ export ERRORDIR=/data/user/axelpo/condor-logs/error/
 export CURRENTDATE=`date +%y%m%d`
 
 # computing parameters
-export NCPUS=2
-export MEMORY=4GB
-export DISK=1GB
+export NCPUS=5
+export MEMORY=8GB
+export DISK=2GB
 export NGPUS=1
 
 #skript used for condor
