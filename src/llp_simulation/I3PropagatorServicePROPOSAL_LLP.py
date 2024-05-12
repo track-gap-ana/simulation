@@ -1,6 +1,8 @@
 import icecube
 import icecube.icetray
 from icecube import dataclasses
+import icecube.PROPOSAL
+#from icecube.PROPOSAL import I3PropagatorServicePROPOSAL
 
 class I3PropagatorServicePROPOSAL_LLP(icecube._sim_services.I3PropagatorService):
     """
@@ -13,8 +15,11 @@ class I3PropagatorServicePROPOSAL_LLP(icecube._sim_services.I3PropagatorService)
     """
     def __init__(self, config_file_sm = "config_SM.json", config_file_llp = "config_DLS.json", only_one_LLP = True):
         super().__init__()
+        icecube.icetray.logging.log_info("init I3PropagatorServicePROPOSAL_LLP")
         self.sm_propagator = icecube.PROPOSAL.I3PropagatorServicePROPOSAL(config_file=config_file_sm)
+        icecube.icetray.logging.log_info("SM propagator done.")
         self.llp_propagator = icecube.PROPOSAL.I3PropagatorServicePROPOSAL(config_file=config_file_llp)
+        icecube.icetray.logging.log_info("LLP propagator done.")
         self.llp_info = dataclasses.I3MapStringDouble()
         self.only_one_LLP = only_one_LLP
 

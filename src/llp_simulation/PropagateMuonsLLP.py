@@ -61,7 +61,6 @@ def PropagateMuonsLLP(tray, name,
         :func:`icecube.simprod.segments.make_propagator`.
 
     """
-    print("PropagateMuonsLLP")
     if CylinderRadius is not None:
         icecube.icetray.logging.log_warn(
             "The CylinderRadius now should be set in the configuration file in the detector configuration")
@@ -69,7 +68,7 @@ def PropagateMuonsLLP(tray, name,
         icecube.icetray.logging.log_warn(
             "The CylinderLength now should be set in the configuration file in the detector configuration")
     propagator_map, muon_propagator = make_propagators(tray, PROPOSAL_config_SM, PROPOSAL_config_LLP, **kwargs)
-    print("here3")
+
     if SaveState:
         rng_state = InputMCTreeName+"_RNGState"
     else:
@@ -84,7 +83,6 @@ def PropagateMuonsLLP(tray, name,
     tray.Add(lambda frame : muon_propagator.reset(), 
              Streams=[icecube.icetray.I3Frame.DAQ])
 
-    print("here4")
     tray.AddModule("I3PropagatorModule", name+"_propagator",
                    PropagatorServices=propagator_map,
                    RandomService=RandomService,
@@ -92,7 +90,6 @@ def PropagateMuonsLLP(tray, name,
                    OutputMCTreeName=OutputMCTreeName,
                    RNGStateName=rng_state)
 
-    print("here6")
     # write LLP information to frame
     tray.Add(lambda frame : muon_propagator.write_LLPInfo(frame), 
              Streams=[icecube.icetray.I3Frame.DAQ])
@@ -106,25 +103,24 @@ def PropagateMuonsLLP(tray, name,
     tray.AddModule(add_empty_tracklist, name+"_add_empty_tracklist",
                 Streams=[icecube.icetray.I3Frame.DAQ])
     
-    print("here6")
     # fix MMCTrackList "bug" that adds MMCTrack for LLP decay muons (PROPOSAL doesn't know if a muon is from LLP or not)
-    def FixMMCTrackListLLP(frame):
-        if "MMCTrackListLLP" in frame:
-            tracklist_LLP         = frame["MMCTrackListLLP"]
+    def FixMMCTrackListLLP(frame, keyname="MMCTrackListLLP"):
+        if keyname in frame:
+            tracklist_LLP         = frame[keyname]
             # highest energy muon is the initial muon from muongun
             initial_muon          = max(tracklist_LLP, key = lambda track : track.Ei)
             frame["MMCTrackList"] = icecube.simclasses.I3MMCTrackList([initial_muon])
             return True
         else:
-            print("no MMCTrackListLLP in frame!")
+            print("no ", keyname, " in frame!")
             exit()
             return False
     # copy over the "buggy" mmctracklist to a new key
+    
     tray.Add(lambda frame: frame.Stop == icetray.I3Frame.DAQ) # since passing streams didn't work for copy and delete
     tray.AddModule("Copy", "copy", Keys = ["MMCTrackList", "MMCTrackListLLP"], If = lambda f: f.Stop == icetray.I3Frame.DAQ)
     tray.AddModule("Delete", "delete", Keys = ["MMCTrackList"], If = lambda f: f.Stop == icetray.I3Frame.DAQ)
     tray.Add(FixMMCTrackListLLP, streams=[icetray.I3Frame.DAQ])
-
 
     tray.Add(LLPEventCounter,
              nevents = nevents,
@@ -154,7 +150,6 @@ def make_propagators(tray,
     """
     from icecube.icetray import I3Units
 
-    print("here0")
     cascade_propagator = icecube.cmc.I3CascadeMCService(
         icecube.phys_services.I3GSLRandomService(1))  # Dummy RNG
     cascade_propagator.SetEnergyThresholdSimulation(1*I3Units.PeV)
@@ -163,10 +158,8 @@ def make_propagators(tray,
     else:
         cascade_propagator.SetThresholdSplit(1*I3Units.PeV)
     cascade_propagator.SetMaxMuons(MaxMuons)
-    
-    print("here1")
+
     muon_propagator = I3PropagatorServicePROPOSAL_LLP(PROPOSAL_config_SM, PROPOSAL_config_LLP, only_one_LLP)
-    print("here2")
     propagator_map = icecube.sim_services.I3ParticleTypePropagatorServiceMap()
 
     for pt in "MuMinus", "MuPlus", "TauMinus", "TauPlus":

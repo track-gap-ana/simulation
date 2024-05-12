@@ -24,7 +24,7 @@ params = llp_simulation.utils.create_config_dict_from_path(args["custom-config"]
 llp_simulation.utils.dump_config_dict(params)
 
 # suppress warnings from PROPOSAL LLP integration
-icetray.set_log_level(icetray.I3LogLevel.LOG_FATAL)
+#icetray.set_log_level(icetray.I3LogLevel.LOG_FATAL)
 
 # Execute Tray
 summary = RunI3Tray(params, llp_simulation.full_llp_simulation.configure_tray, "MuonGunGenerator",
