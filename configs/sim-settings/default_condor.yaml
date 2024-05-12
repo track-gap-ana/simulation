@@ -39,7 +39,7 @@ rawphotonseriesname: null
 keepmctree: true
 nevents: 1
 gcdfile: /data/user/axelpo/LLP-at-IceCube/dark-leptonic-scalar-simulation/resources/GeoCalibDetectorStatus_2021.Run135903.T00S1.Pass2_V1b_Snow211115.i3.gz
-config_SM: /data/user/axelpo/LLP-at-IceCube/dark-leptonic-scalar-simulation/resources/config_SM.json
+config_SM: /data/user/axelpo/track-gap-ana/simulation/configs/PROPOSAL/config_SM.json
 config_LLP: null # best to leave it like this and use LLP model parameters instead
 only_one_LLP: true
 OnlySaveLLPEvents: true
@@ -48,9 +48,9 @@ min_LLP_length: 100.0
 entry_margin: 100.0 # for good LLP check. min. depth in detector for prod?
 exit_margin: 100.0 # for good LLP check. min. for decay
 LLP-model: DarkLeptonicScalar
-mass: 0.115
+mass: 115
 eps: 5.0e-05
-bias: 3000000000.0
+bias: 3000000.0
 use-clsim: false
 runmphitfilter: true
 gpulib: opencl

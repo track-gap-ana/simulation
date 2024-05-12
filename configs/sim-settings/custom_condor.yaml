@@ -3,20 +3,16 @@ gamma: 2.0
 offset: 700.0
 emin: 200.0
 emax: 10000.0
-nevents: 500
+nevents: 1
 gcdfile: /data/user/axelpo/LLP-at-IceCube/dark-leptonic-scalar-simulation/resources/GeoCalibDetectorStatus_2021.Run135903.T00S1.Pass2_V1b_Snow211115.i3.gz
-only_one_LLP: false
-OnlySaveLLPEvents: false
-propagatephotons: false
+only_one_LLP: true
+OnlySaveLLPEvents: true
+propagatephotons: true
 both_prod_decay_inside: true
 min_LLP_length: 100.0
 entry_margin: 100.0 # for good LLP check. min. depth in detector for prod?
 exit_margin: 100.0 # for good LLP check. min. for decay
 LLP-model: DarkLeptonicScalar
-mass: 115 # in MeV
-eps: 4.0e-5
-bias: 1.25e+6
-
-parentdir: "/data/user/axelpo/"
-dirname: "output-novenv-for-counting/"
-
+mass: 110 # in MeV
+eps: 2.0e-5
+bias: 5e+6
