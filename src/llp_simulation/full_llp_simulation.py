@@ -14,7 +14,7 @@ from icecube.simprod.util import CombineHits, DrivingTime, SetGPUEnvironmentVari
 
 from icecube.icetray import I3Tray, I3Units
 from icecube.simprod.util import BasicCounter
-from icecube.simprod.segments import GenerateCosmicRayMuons, GenerateNaturalRateMuons, PPC
+from icecube.simprod.segments import GenerateCosmicRayMuons, GenerateNaturalRateMuons, PPC, PropagateMuons
 
 from icecube.dataclasses import *
 from icecube import clsim
@@ -61,14 +61,14 @@ def configure_tray(tray, params, stats, logger):
     ### MUONS WITH MUONGUN ###
     if params['natural_rate']:
         tray.AddSegment(GenerateNaturalRateMuons, "muongun",
-                        NumEvents=1e15,
+                        NumEvents=1e8,
                         mctree_name="I3MCTree_preMuonProp",
                         flux_model="GaisserH4a_atmod12_SIBYLL")
     else:
         # Configure tray segment that actually does stuff.
         tray.AddSegment(GenerateCosmicRayMuons, "muongun",
                         mctree_name="I3MCTree_preMuonProp",
-                        num_events=1e15,
+                        num_events=1e8,
                         flux_model=params['model'],
                         gamma_index=params['gamma'],
                         energy_offset=params['offset'],
