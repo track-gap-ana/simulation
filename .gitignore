@@ -1,3 +1,7 @@
+# condor exe dirs
+scripts/condor/condor_exe_dirs/
+
+
 *.pth
 *.hdf
 *.hdf5
