@@ -108,19 +108,16 @@ def PropagateMuonsLLP(tray, name,
         if keyname in frame:
             tracklist_LLP         = frame[keyname]
             # highest energy muon is the initial muon from muongun
-            initial_muon          = max(tracklist_LLP, key = lambda track : track.Ei)
+            initial_muon          = max(tracklist_LLP, key = lambda track : track.Ei, default = None)
             frame["MMCTrackList"] = icecube.simclasses.I3MMCTrackList([initial_muon])
             return True
         else:
             print("no ", keyname, " in frame!")
             exit()
             return False
-    # copy over the "buggy" mmctracklist to a new key
-    
-    tray.Add(lambda frame: frame.Stop == icetray.I3Frame.DAQ) # since passing streams didn't work for copy and delete
-    tray.AddModule("Copy", "copy", Keys = ["MMCTrackList", "MMCTrackListLLP"], If = lambda f: f.Stop == icetray.I3Frame.DAQ)
-    tray.AddModule("Delete", "delete", Keys = ["MMCTrackList"], If = lambda f: f.Stop == icetray.I3Frame.DAQ)
-    tray.Add(FixMMCTrackListLLP, streams=[icetray.I3Frame.DAQ])
+    # rename the "buggy" mmctracklist to a new key
+    tray.AddModule("Rename", "rename MMCTrackList", Keys = ["MMCTrackList", "MMCTrackListLLP"])
+    tray.Add(FixMMCTrackListLLP, streams=[icetray.I3Frame.DAQ, icetray.I3Frame.Physics]) # no P frames here but in case u dumb copy this code later
 
     tray.Add(LLPEventCounter,
              nevents = nevents,
