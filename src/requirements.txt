@@ -1,0 +1,2 @@
+numpy
+PyYAML==6.0.1
