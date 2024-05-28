@@ -1,6 +1,6 @@
 # simulation parameters
 export NJOBS=100
-export NEVENTS=100
+export NEVENTS=10
 
 # environment params
 export REPODIR=/data/user/axelpo/track-gap-ana/simulation/
@@ -19,7 +19,7 @@ export ERRORDIR=/data/user/axelpo/condor-logs/error/
 export CURRENTDATE=`date +%y%m%d`
 
 # computing parameters
-export NCPUS=5
+export NCPUS=1
 export MEMORY=8GB
 export DISK=2GB
 export NGPUS=1
