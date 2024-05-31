@@ -257,7 +257,7 @@ class LLPEventCounter(icetray.I3Module):
         
     def Configure(self):
         self.only_save_LLP          = self.GetParameter("only_save_LLP")
-        self.only_one_LLP          = self.GetParameter("only_one_LLP")
+        self.only_one_LLP           = self.GetParameter("only_one_LLP")
         self.nevents                = self.GetParameter("nevents")
         self.min_LLP_length         = self.GetParameter("min_LLP_length")
         self.gcdFile                = self.GetParameter("GCDFile") # create surface for detector volume
@@ -349,12 +349,14 @@ class LLPEventCounter(icetray.I3Module):
         return good_LLP
         
     def Finish(self):
-        icecube.icetray.logging.log_info(
+        icecube.icetray.logging.log_notice(
             f"Finished simulation after {self.event_count} events.\n \
             Requested events: {self.nevents}\n \
             Total muons propagated: {self.tot_mu_propagated}\n \
             LLP counter: {self.llp_counter}"
         )
+        if 1 in self.llp_counter:
+            icecube.icetray.logging.log_notice(f"Fraction saved events to single LLP {1.0*self.event_count/self.llp_counter[1]}")
         # import matplotlib.pyplot as plt
         # plt.figure()
         # plt.hist(self.zarr, bins=100)
