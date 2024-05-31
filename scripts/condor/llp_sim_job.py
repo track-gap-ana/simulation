@@ -67,7 +67,7 @@ params = llp_simulation.utils.process_config_dict(custom_config, default_config)
 llp_simulation.utils.dump_config_dict(params)
 
 # suppress warnings from PROPOSAL LLP integration
-icetray.set_log_level(icetray.I3LogLevel.LOG_WARN)
+icetray.set_log_level(icetray.I3LogLevel.LOG_NOTICE)
 icetray.set_log_level_for_unit("PROPOSAL", icetray.I3LogLevel.LOG_ERROR)
 
 # Execute Tray
