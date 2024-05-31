@@ -14,8 +14,8 @@ import icecube.PROPOSAL
 import icecube.MuonGun
 import icecube.dataio
 import json
-import numpy as np
 from .I3PropagatorServicePROPOSAL_LLP import I3PropagatorServicePROPOSAL_LLP
+import math
 
 @icecube.icetray.traysegment
 def PropagateMuonsLLP(tray, name,
@@ -94,6 +94,18 @@ def PropagateMuonsLLP(tray, name,
     tray.Add(lambda frame : muon_propagator.write_LLPInfo(frame), 
              Streams=[icecube.icetray.I3Frame.DAQ])
     
+    # check if good LLP event
+    tray.Add(LLPEventCounter,
+             nevents = nevents,
+             only_save_LLP = OnlySaveLLPEvents,
+             only_one_LLP  = kwargs["only_one_LLP"],
+             GCDFile = gcdfile,
+             both_prod_decay_inside = both_prod_decay_inside,
+             min_LLP_length = min_LLP_length,
+             entry_margin = entry_margin,
+             exit_margin = exit_margin,
+            )
+    
     # Add empty MMCTrackList objects for events that have none.
     def add_empty_tracklist(frame):
         if "MMCTrackList" not in frame:
@@ -106,29 +118,23 @@ def PropagateMuonsLLP(tray, name,
     # fix MMCTrackList "bug" that adds MMCTrack for LLP decay muons (PROPOSAL doesn't know if a muon is from LLP or not)
     def FixMMCTrackListLLP(frame, keyname="MMCTrackListLLP"):
         if keyname in frame:
-            tracklist_LLP         = frame[keyname]
+            tracklist_LLP = frame[keyname]
             # highest energy muon is the initial muon from muongun
-            initial_muon          = max(tracklist_LLP, key = lambda track : track.Ei, default = None)
+            initial_muon = max(tracklist_LLP, key = lambda track : track.Ei, default = None)
+            if initial_muon is None:
+                icecube.icetray.logging.log_error("no initial muon in " + str(keyname))
+                frame["MMCTrackList"] = icecube.simclasses.I3MMCTrackList() # empty
+                return False
+            # create new MMCTrackList with only initial muon
             frame["MMCTrackList"] = icecube.simclasses.I3MMCTrackList([initial_muon])
             return True
         else:
-            print("no ", keyname, " in frame!")
-            exit()
+            icecube.icetray.logging.log_error("no " + str(keyname) + " in frame!")
             return False
     # rename the "buggy" mmctracklist to a new key
     tray.AddModule("Rename", "rename MMCTrackList", Keys = ["MMCTrackList", "MMCTrackListLLP"])
-    tray.Add(FixMMCTrackListLLP, streams=[icetray.I3Frame.DAQ, icetray.I3Frame.Physics]) # no P frames here but in case u dumb copy this code later
+    tray.Add(FixMMCTrackListLLP, streams=[icetray.I3Frame.DAQ, icetray.I3Frame.Physics]) # no P frames in simulation but in case u dumb copy this code later
 
-    tray.Add(LLPEventCounter,
-             nevents = nevents,
-             only_save_LLP = OnlySaveLLPEvents,
-             GCDFile = gcdfile,
-             both_prod_decay_inside = both_prod_decay_inside,
-             min_LLP_length = min_LLP_length,
-             entry_margin = entry_margin,
-             exit_margin = exit_margin,
-            )
-    
     return
 
 def make_propagators(tray,                     
@@ -227,6 +233,9 @@ class LLPEventCounter(icetray.I3Module):
         self.only_save_LLP = True
         self.AddParameter("only_save_LLP", "Only save LLP events", self.only_save_LLP)
         
+        self.only_one_LLP = True
+        self.AddParameter("only_one_LLP", "Only save single LLP events", self.only_one_LLP)
+        
         self.gcdFile = ""
         self.AddParameter("GCDFile", "GCD file which defines the in-ice volume", self.gcdFile)
 
@@ -248,6 +257,7 @@ class LLPEventCounter(icetray.I3Module):
         
     def Configure(self):
         self.only_save_LLP          = self.GetParameter("only_save_LLP")
+        self.only_one_LLP          = self.GetParameter("only_one_LLP")
         self.nevents                = self.GetParameter("nevents")
         self.min_LLP_length         = self.GetParameter("min_LLP_length")
         self.gcdFile                = self.GetParameter("GCDFile") # create surface for detector volume
@@ -261,14 +271,42 @@ class LLPEventCounter(icetray.I3Module):
             self.surface = MakeSurface(self.gcdFile, self.padding)
         else:
             self.surface = icecube.MuonGun.Cylinder(1000,500) # approximate detector volume
+            
+        self.tot_mu_propagated = 0
+        self.llp_counter = {}
+        self.xarr = []
+        self.yarr = []
+        self.zarr = []
 
     def DAQ(self, frame):
         """ only save frames that have one and only one good LLP event """
+        self.tot_mu_propagated += 1
+        if self.tot_mu_propagated%10000 == 0:
+            icecube.icetray.logger.log_info("Tot mu/Tot saved events: ", self.tot_mu_propagated, self.event_count)
+            # print("Fraction throughgoing LLP: ", self.llp_inside/self.tot_llp_count)
+            print("Count LLPs:", self.llp_counter)
+
+        n_llp = frame["LLPInfo"]["interactions"]
+        if n_llp in self.llp_counter:
+            self.llp_counter[n_llp] += 1
+        else:
+            self.llp_counter[n_llp] = 1
+        
+        # Three options: save all, save all LLPs, save only single + good LLPs (should be standard)
         if self.only_save_LLP:
-            if frame["LLPInfo"]["interactions"] == 1 and self.CheckProductionDecayPoint(frame):
-                self.event_count += 1
-            else:
+            if n_llp < 1:
                 return False
+            if self.only_one_LLP:
+                if n_llp == 1 and self.CheckProductionDecayPoint(frame):
+                    self.event_count += 1
+                    self.xarr.append(frame["LLPInfo"]["prod_x"])
+                    self.yarr.append(frame["LLPInfo"]["prod_y"])
+                    self.zarr.append(frame["LLPInfo"]["prod_z"])
+                else:
+                    return False
+            else:
+                # checking good LLP makes no sense for N > 1
+                self.event_count += 1
         else:
             self.event_count += 1
         
@@ -276,9 +314,10 @@ class LLPEventCounter(icetray.I3Module):
             self.RequestSuspension()
             
         self.PushFrame(frame)
-        
+    
     def CheckProductionDecayPoint(self, frame):
         """ check that the LLP production and/or decay point is inside the geometry and that length is long enough """
+        # no need to check vertices if gap length is too small        
         if frame["LLPInfo"]["length"] < self.min_LLP_length:
             return False
         
@@ -289,16 +328,16 @@ class LLPEventCounter(icetray.I3Module):
         prod_intersection  = self.surface.intersection(production, direction) # negative value means intersection behind point, positive means in front
         decay_intersection = self.surface.intersection(decay,      direction)
         
-        # add margins to the production and decay points
+        # add margins to the production and decay points, reduces fiducial detector volume
         prod_intersection.first  += self.entry_margin
         prod_intersection.second -= self.exit_margin
         decay_intersection.first  += self.entry_margin
         decay_intersection.second -= self.exit_margin
         
-        # inside?
-        prod_inside = (prod_intersection.first > 0 and prod_intersection.second < 0)
-        decay_inside = (decay_intersection.first > 0 and decay_intersection.second < 0)
-        
+        # production and decay vertex inside detector?
+        prod_inside = (prod_intersection.first < 0 and prod_intersection.second > 0)
+        decay_inside = (decay_intersection.first < 0 and decay_intersection.second > 0)
+
         good_LLP = False
         if self.both_prod_decay_inside:
             if prod_inside and decay_inside:
@@ -308,3 +347,64 @@ class LLPEventCounter(icetray.I3Module):
                 good_LLP = True
             
         return good_LLP
+        
+    def Finish(self):
+        icecube.icetray.logging.log_info(
+            f"Finished simulation after {self.event_count} events.\n \
+            Requested events: {self.nevents}\n \
+            Total muons propagated: {self.tot_mu_propagated}\n \
+            Total LLP events: {self.tot_llp_count}"
+        )
+        print(f"Finished simulation after {self.event_count} events.\n \
+            Requested events: {self.nevents}\n \
+            Total muons propagated: {self.tot_mu_propagated}\n \
+            Total LLP events: {self.tot_llp_count}")
+        # import matplotlib.pyplot as plt
+        # plt.figure()
+        # plt.hist(self.zarr, bins=100)
+        # plt.show()
+        
+        # plotProductionPoints(self.xarr, self.yarr, self.zarr)
+        return
+    
+# def plotProductionPoints(x,y,z):
+#     import matplotlib.pyplot as plt
+#     from mpl_toolkits.mplot3d import Axes3D
+#     import numpy as np
+
+#     # Create a 3D plot
+#     fig = plt.figure(figsize=(12,12))  # Set the figure size to 10x8 inches
+#     ax = fig.add_subplot(111, projection='3d')
+#     ax.scatter(x, y, z)
+
+#     # Plot a cylinder
+#     height = 1000
+#     radius = 500
+#     resolution = 100
+#     theta = np.linspace(0, 2 * np.pi, resolution)
+#     z_cylinder = np.linspace(-height/2, height/2, resolution)
+#     theta_grid, z_grid = np.meshgrid(theta, z_cylinder)
+#     x_grid = radius * np.cos(theta_grid)
+#     y_grid = radius * np.sin(theta_grid)
+#     ax.plot_surface(x_grid, y_grid, z_grid, alpha=0.1, color='b')
+
+#     # Set labels and title
+#     ax.set_xlabel('X')
+#     ax.set_ylabel('Y')
+#     ax.set_zlabel('Z')
+#     ax.set_title('Red = prod, Green = decay')
+
+#     # Set all axes limits
+#     xmin = -500
+#     xmax = 500
+#     ymin = -500
+#     ymax = 500
+#     zmin = -500
+#     zmax = 500
+    
+#     ax.set_xlim([xmin, xmax])
+#     ax.set_ylim([ymin, ymax])
+#     ax.set_zlim([zmin, zmax])
+
+#     # Show the plot
+#     plt.show()
