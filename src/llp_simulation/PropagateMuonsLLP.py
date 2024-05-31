@@ -353,12 +353,12 @@ class LLPEventCounter(icetray.I3Module):
             f"Finished simulation after {self.event_count} events.\n \
             Requested events: {self.nevents}\n \
             Total muons propagated: {self.tot_mu_propagated}\n \
-            Total LLP events: {self.tot_llp_count}"
+            LLP counter: {self.llp_counter}"
         )
         print(f"Finished simulation after {self.event_count} events.\n \
             Requested events: {self.nevents}\n \
             Total muons propagated: {self.tot_mu_propagated}\n \
-            Total LLP events: {self.tot_llp_count}")
+            LLP counter: {self.llp_counter}")
         # import matplotlib.pyplot as plt
         # plt.figure()
         # plt.hist(self.zarr, bins=100)
