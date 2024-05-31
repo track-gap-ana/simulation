@@ -282,9 +282,9 @@ class LLPEventCounter(icetray.I3Module):
         """ only save frames that have one and only one good LLP event """
         self.tot_mu_propagated += 1
         if self.tot_mu_propagated%10000 == 0:
-            icecube.icetray.logger.log_info("Tot mu/Tot saved events: ", self.tot_mu_propagated, self.event_count)
+            icecube.icetray.logging.log_info("Tot mu/Tot saved events: ", self.tot_mu_propagated, self.event_count)
             # print("Fraction throughgoing LLP: ", self.llp_inside/self.tot_llp_count)
-            print("Count LLPs:", self.llp_counter)
+            icecube.icetray.logging.log_info("Count LLPs:", self.llp_counter)
 
         n_llp = frame["LLPInfo"]["interactions"]
         if n_llp in self.llp_counter:
@@ -355,10 +355,6 @@ class LLPEventCounter(icetray.I3Module):
             Total muons propagated: {self.tot_mu_propagated}\n \
             LLP counter: {self.llp_counter}"
         )
-        print(f"Finished simulation after {self.event_count} events.\n \
-            Requested events: {self.nevents}\n \
-            Total muons propagated: {self.tot_mu_propagated}\n \
-            LLP counter: {self.llp_counter}")
         # import matplotlib.pyplot as plt
         # plt.figure()
         # plt.hist(self.zarr, bins=100)
