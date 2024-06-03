@@ -355,8 +355,15 @@ class LLPEventCounter(icetray.I3Module):
             Total muons propagated: {self.tot_mu_propagated}\n \
             LLP counter: {self.llp_counter}"
         )
+        print(
+            f"Finished simulation after {self.event_count} events.\n \
+            Requested events: {self.nevents}\n \
+            Total muons propagated: {self.tot_mu_propagated}\n \
+            LLP counter: {self.llp_counter}"
+        )
         if 1 in self.llp_counter:
             icecube.icetray.logging.log_notice(f"Fraction saved events to single LLP {1.0*self.event_count/self.llp_counter[1]}")
+            print(f"Fraction saved events to single LLP {1.0*self.event_count/self.llp_counter[1]}")
         # import matplotlib.pyplot as plt
         # plt.figure()
         # plt.hist(self.zarr, bins=100)
