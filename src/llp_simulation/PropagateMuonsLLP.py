@@ -104,6 +104,7 @@ def PropagateMuonsLLP(tray, name,
              min_LLP_length = min_LLP_length,
              entry_margin = entry_margin,
              exit_margin = exit_margin,
+             dirpath = kwargs["dirpath"],
             )
     
     # Add empty MMCTrackList objects for events that have none.
@@ -255,6 +256,10 @@ class LLPEventCounter(icetray.I3Module):
         self.both_prod_decay_inside = True
         self.AddParameter("both_prod_decay_inside", "Require LLP to have both production and decay point inside detector", self.both_prod_decay_inside)
         
+        # summary file path
+        self.dirpath = ""
+        self.AddParameter("dirpath", "Path for directory", self.dirpath)
+        
     def Configure(self):
         self.only_save_LLP          = self.GetParameter("only_save_LLP")
         self.only_one_LLP           = self.GetParameter("only_one_LLP")
@@ -265,6 +270,7 @@ class LLPEventCounter(icetray.I3Module):
         self.entry_margin           = self.GetParameter("entry_margin") # how deep inside the detector the LLP production point must be
         self.exit_margin            = self.GetParameter("exit_margin") # how deep inside the detector the LLP decay point must be
         self.both_prod_decay_inside = self.GetParameter("both_prod_decay_inside")
+        self.dirpath                = self.GetParameter("dirpath")
 
         # use cylinder for detector volume if no gcd file
         if self.gcdFile != "":
@@ -364,6 +370,10 @@ class LLPEventCounter(icetray.I3Module):
         if 1 in self.llp_counter:
             icecube.icetray.logging.log_notice(f"Fraction saved events to single LLP {1.0*self.event_count/self.llp_counter[1]}")
             print(f"Fraction saved events to single LLP {1.0*self.event_count/self.llp_counter[1]}")
+        # write llp_counter to file
+        with open(self.dirpath + "llp_counter.json", "w") as file:
+            json.dump(self.llp_counter, file)
+        
         # import matplotlib.pyplot as plt
         # plt.figure()
         # plt.hist(self.zarr, bins=100)
