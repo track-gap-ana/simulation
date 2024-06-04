@@ -34,6 +34,7 @@ def PropagateMuonsLLP(tray, name,
                    min_LLP_length = 0,
                    entry_margin = 0,
                    exit_margin = 0,
+                   dirpath = "",
                    **kwargs):
     r"""Propagate muons.
 
@@ -104,7 +105,7 @@ def PropagateMuonsLLP(tray, name,
              min_LLP_length = min_LLP_length,
              entry_margin = entry_margin,
              exit_margin = exit_margin,
-             dirpath = kwargs["dirpath"],
+             dirpath = dirpath,
             )
     
     # Add empty MMCTrackList objects for events that have none.
