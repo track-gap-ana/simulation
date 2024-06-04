@@ -373,6 +373,8 @@ class LLPEventCounter(icetray.I3Module):
             print(f"Fraction saved events to single LLP {1.0*self.event_count/self.llp_counter[1]}")
         # write llp_counter to file
         with open(self.dirpath + "llp_counter.json", "w") as file:
+            self.llp_counter["nevents"] = self.event_count
+            self.llp_counter["total"] = self.tot_mu_propagated
             json.dump(self.llp_counter, file)
         
         # import matplotlib.pyplot as plt
