@@ -127,3 +127,17 @@ def add_default_output_name(params):
         ".mass-"+str(params["mass"])+".eps-" + str(params["eps"]) +\
             ".bias-"+str(params["bias"])+".nevents-"+str(params["nevents"])+".i3.gz"
     return params
+
+def bias_recommender(xsec, desired_mean_free_path):
+    """ xsec in cm2 and desired_mean_free_path in meters
+    """
+    # in 1/cm3
+    n_oxygen = 6.02214076e23 * 0.92 / 18 # number density of oxygen in ice
+    n_hydrogen = 2*n_oxygen              # number density of hydrogen in ice
+    n_ice = n_oxygen + n_hydrogen        # number density of ice
+    
+    # calculate the mean free path of the LLP
+    mean_free_path = 1 / (n_ice * xsec) / 100 # convert to meters
+    bias =  mean_free_path / desired_mean_free_path
+    
+    return bias
