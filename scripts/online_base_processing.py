@@ -9,6 +9,7 @@ import icecube.online_filterscripts.base_segments.base_processing as base_proces
 
 import argparse
 import glob
+import os
 
 # create argparse for input and output files
 parser = argparse.ArgumentParser()
@@ -38,6 +39,22 @@ elif args.inputfolder == "" and args.inputfile != "":
 else:
     print("Please provide either an input folder or an input file. Not neither or both.")
     exit()
+
+
+
+# test access to input and output files
+for f in i3filelist:
+    if not os.access(f,os.R_OK):
+        raise Exception('Cannot read from %s'%f)
+def test_write(f):
+    if f:
+        try:
+            open(f,'w')
+        except OSError:
+            raise Exception('Cannot write to %s'%f)
+        finally:
+            os.remove(f)
+test_write(outputfile)
 
 # create tray
 tray = I3Tray()
