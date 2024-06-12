@@ -9,6 +9,7 @@ arguments = <pythonscript> \
  --procnum $(ProcId) \
  --clusterid $(ClusterId) \
  --current-date <currentdate> \
+ --runid $$([<datasetid>*100000+$(ProcId)]) \
 
 log = <logscratchdir>job.log.$(ClusterId).$(ProcId)
 output = <outputdir>job.out.$(ClusterId).$(ProcId)

@@ -303,12 +303,12 @@ class LLPEventCounter(icetray.I3Module):
         if self.only_save_LLP:
             if n_llp < 1:
                 return False
+            self.xarr.append(frame["LLPInfo"]["prod_x"])
+            self.yarr.append(frame["LLPInfo"]["prod_y"])
+            self.zarr.append(frame["LLPInfo"]["prod_z"])
             if self.only_one_LLP:
                 if n_llp == 1 and self.CheckProductionDecayPoint(frame):
                     self.event_count += 1
-                    self.xarr.append(frame["LLPInfo"]["prod_x"])
-                    self.yarr.append(frame["LLPInfo"]["prod_y"])
-                    self.zarr.append(frame["LLPInfo"]["prod_z"])
                 else:
                     return False
             else:
@@ -380,49 +380,52 @@ class LLPEventCounter(icetray.I3Module):
         # import matplotlib.pyplot as plt
         # plt.figure()
         # plt.hist(self.zarr, bins=100)
-        # plt.show()
+        # plt.savefig(self.dirpath + "zarr.png")
         
-        # plotProductionPoints(self.xarr, self.yarr, self.zarr)
+        # plotProductionPoints(self.xarr, self.yarr, self.zarr, path = self.dirpath + "prod_decay_points.png")
         return
     
-# def plotProductionPoints(x,y,z):
-#     import matplotlib.pyplot as plt
-#     from mpl_toolkits.mplot3d import Axes3D
-#     import numpy as np
+def plotProductionPoints(x,y,z, path = None):
+    import matplotlib.pyplot as plt
+    from mpl_toolkits.mplot3d import Axes3D
+    import numpy as np
 
-#     # Create a 3D plot
-#     fig = plt.figure(figsize=(12,12))  # Set the figure size to 10x8 inches
-#     ax = fig.add_subplot(111, projection='3d')
-#     ax.scatter(x, y, z)
+    # Create a 3D plot
+    fig = plt.figure(figsize=(12,12))  # Set the figure size to 10x8 inches
+    ax = fig.add_subplot(111, projection='3d')
+    ax.scatter(x, y, z)
 
-#     # Plot a cylinder
-#     height = 1000
-#     radius = 500
-#     resolution = 100
-#     theta = np.linspace(0, 2 * np.pi, resolution)
-#     z_cylinder = np.linspace(-height/2, height/2, resolution)
-#     theta_grid, z_grid = np.meshgrid(theta, z_cylinder)
-#     x_grid = radius * np.cos(theta_grid)
-#     y_grid = radius * np.sin(theta_grid)
-#     ax.plot_surface(x_grid, y_grid, z_grid, alpha=0.1, color='b')
+    # Plot a cylinder
+    height = 1000
+    radius = 500
+    resolution = 100
+    theta = np.linspace(0, 2 * np.pi, resolution)
+    z_cylinder = np.linspace(-height/2, height/2, resolution)
+    theta_grid, z_grid = np.meshgrid(theta, z_cylinder)
+    x_grid = radius * np.cos(theta_grid)
+    y_grid = radius * np.sin(theta_grid)
+    ax.plot_surface(x_grid, y_grid, z_grid, alpha=0.1, color='b')
 
-#     # Set labels and title
-#     ax.set_xlabel('X')
-#     ax.set_ylabel('Y')
-#     ax.set_zlabel('Z')
-#     ax.set_title('Red = prod, Green = decay')
+    # Set labels and title
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+    ax.set_title('Red = prod, Green = decay')
 
-#     # Set all axes limits
-#     xmin = -500
-#     xmax = 500
-#     ymin = -500
-#     ymax = 500
-#     zmin = -500
-#     zmax = 500
+    # Set all axes limits
+    xmin = -500
+    xmax = 500
+    ymin = -500
+    ymax = 500
+    zmin = -500
+    zmax = 500
     
-#     ax.set_xlim([xmin, xmax])
-#     ax.set_ylim([ymin, ymax])
-#     ax.set_zlim([zmin, zmax])
+    ax.set_xlim([xmin, xmax])
+    ax.set_ylim([ymin, ymax])
+    ax.set_zlim([zmin, zmax])
 
-#     # Show the plot
-#     plt.show()
+    # Show the plot
+    if path is not None:
+        plt.savefig(path)
+    else:
+        plt.show()
