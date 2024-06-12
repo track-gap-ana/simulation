@@ -1,6 +1,7 @@
 # simulation parameters
 export NJOBS=100
 export NEVENTS=10
+export DATASETID=777
 
 # environment params
 export REPODIR=/data/user/axelpo/track-gap-ana/simulation/
@@ -46,6 +47,7 @@ sed -e 's#<pythonscript>#'$PYTHONSCRIPT'#g' \
     -e 's#<njobs>#'$NJOBS'#g' \
     -e 's#<currentdate>#'$CURRENTDATE'#g' \
     -e 's#<nevents>#'$NEVENTS'#g' \
+    -e 's#<datasetid>#'$DATASETID'#g' \
     $CONDORSCRIPT > "$EXEDIR/condor.submit";
 
 # transform job script

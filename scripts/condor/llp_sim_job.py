@@ -22,6 +22,7 @@ parser.add_argument('--procnum', dest="procnum", type=int, required=True, help='
 parser.add_argument('--clusterid', dest="clusterid", type=int, required=True, help='Condor Cluster ID.')
 parser.add_argument('--current-date', dest="current-date", type=str, required=True, help='Current date.')
 parser.add_argument('--datadir', dest="datadir", type=str, default="/data/user/axelpo/LLP-data/", help='Data directory')
+parser.add_argument('--runid', dest="runid", type=int, required=True, help='Run ID.')
 
 args = vars(parser.parse_args()) # dict
 
@@ -34,11 +35,12 @@ with open(args["default-config-file"], "r") as file:
 default_config.update(custom_config)
 custom_config = default_config
 
-# override nevents
+# override stuff
 custom_config["nevents"] = args["nevents"]
 custom_config["seed"]    = args["seed"]
 custom_config["nproc"]   = args["nproc"]
 custom_config["procnum"] = args["procnum"]
+custom_config["runid"]   = args["runid"]
 
 # variables for naming
 model      = custom_config["LLP-model"]
