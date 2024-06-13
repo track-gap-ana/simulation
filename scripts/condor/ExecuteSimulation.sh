@@ -1,6 +1,6 @@
 # simulation parameters
 export NJOBS=100
-export NEVENTS=10
+export NEVENTS=500
 export DATASETID=777
 
 # environment params
