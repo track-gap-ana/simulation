@@ -49,7 +49,7 @@ class Plotter(icetray.I3Module):
     
     def Configure(self):
         # lists for histograms
-        histograms = {"muon_energy": [],
+        self.histograms = {"muon_energy": [],
                       "muon_zenith": [],
                       "muon_length": [],
                       "LLP_gap": [],
