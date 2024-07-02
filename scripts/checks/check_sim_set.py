@@ -52,6 +52,9 @@ for i, file in enumerate(filelist):
 # write bad files to a textfile
 print("Bad files:", badfiles)
 if args.remove_bad:
+    if badfiles == []:
+        print("No bad files found.")
+        exit()
     parentfolder = os.path.dirname(os.path.dirname(badfiles[0]))
     print("Writing bad file list to ", parentfolder)
     with open(parentfolder + "/bad_files_removed.txt", "w") as f:
