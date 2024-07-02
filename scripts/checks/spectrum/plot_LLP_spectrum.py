@@ -2,8 +2,10 @@ import icecube
 from icecube import icetray, dataio, dataclasses, MuonGun
 from icecube.icetray import I3Tray
 
+import os
 import numpy as np
 import matplotlib.pyplot as plt
+import corner
 
 # get the file name with an argparse
 import argparse
@@ -14,6 +16,10 @@ args = parser.parse_args()
 
 filename = args.input
 nevents = args.nevents
+
+folder = os.path.dirname(filename)
+folder = os.path.join(folder + "/spectrum_plots")
+os.makedirs(folder, exist_ok=True)
 
 # funcs
 def MakeSurface(gcdName, padding):
@@ -46,8 +52,14 @@ def MakeSurface(gcdName, padding):
 
 # create plotter
 class Plotter(icetray.I3Module):
-    
+    def __init__(self, ctx):
+        icetray.I3Module.__init__(self, ctx)
+        self.folder = ""
+        self.AddParameter("folder", "folder", self.folder)
+
     def Configure(self):
+        self.folder = self.GetParameter("folder")
+        assert self.folder != ""
         # lists for histograms
         self.histograms = {"muon_energy": [],
                       "muon_zenith": [],
@@ -97,19 +109,43 @@ class Plotter(icetray.I3Module):
         # write to file
         import pandas as pd
         df = pd.DataFrame(self.histograms)
-        df.to_csv("LLP_spectrum.csv")
+        df.to_csv(self.folder + "/spectrum.csv")
         # plot
         for key in self.histograms.keys():
             plt.figure()
             plt.hist(self.histograms[key], bins=100, histtype="step", label=key)
             plt.legend()
-            plt.savefig(f"{key}.png")
+            path = os.path.join(self.folder, f"{key}.png")
+            plt.savefig(path)
+            plt.close()
+        # corner plots
+        # Create a list of performance variable values
+        keys = list(self.histograms.keys())
+        try:
+            keys.remove("LLP_zenith")
+        except:
+            pass
+        vals = [self.histograms[key] for key in keys]
+        
+        # Plot the histogram triangle
+        print("Creating corner plot")
+        figure = corner.corner(
+            np.transpose(vals),
+            labels=keys,
+            show_titles=True,
+            title_fmt=".2f",
+            bins=100,
+            plot_contours=True,
+            smooth=True,
+            # axes_scale="log",
+        )
+        plt.savefig(self.folder + "/corner.png")
 
 # tray
 tray = I3Tray()
 # reader
 tray.AddModule("I3Reader", "reader", Filename=filename)
-tray.AddModule(Plotter)
+tray.AddModule(Plotter, folder=folder)
 
 if nevents == -1:
     tray.Execute()
