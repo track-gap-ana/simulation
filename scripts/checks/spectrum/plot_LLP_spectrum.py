@@ -83,11 +83,13 @@ class Plotter(icetray.I3Module):
             muon_energy += track.Ei
 
         # get muon zenith
-        muon_zenith = tracklist[0].particle.dir.zenith # overwrite, but it's the same
+        muon_zenith = tracklist[0].particle.dir.zenith
 
         # get muon length
         intersections = surface.intersection(tracklist[0].particle.pos, tracklist[0].particle.dir)
         muon_length = intersections.second - intersections.first
+
+        assert intersections.second > intersections.first
 
         return muon_energy, muon_zenith, muon_length
 
@@ -98,6 +100,7 @@ class Plotter(icetray.I3Module):
         df.to_csv("LLP_spectrum.csv")
         # plot
         for key in self.histograms.keys():
+            plt.figure()
             plt.hist(self.histograms[key], bins=100, histtype="step", label=key)
             plt.legend()
             plt.savefig(f"{key}.png")
