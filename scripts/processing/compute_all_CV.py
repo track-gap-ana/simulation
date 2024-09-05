@@ -4,23 +4,46 @@ from icecube import icetray, dataclasses, dataio, phys_services
 from icecube.phys_services.which_split import which_split
 from icecube.icetray import I3Tray, I3Units
 from icecube.common_variables import direct_hits, hit_multiplicity, track_characteristics, hit_statistics, time_characteristics
+import argparse
+import glob
 
-# filename
-filename = "/home/axel/i3/LLP-data/offline_processed/earlyLibra_10E3_full_offline_preprocess_08222024_earlyLeo_full_online_preprocess_08192024_LLPSimulation.DarkLeptonicScalar.mass-110.0.eps-3e-05.bias-1000000.0.nevents-50_21466947_214962476.i3.gz"
-gcdfile = "/home/axel/i3/GeoCalibDetectorStatus_2021.Run135903.T00S1.Pass2_V1b_Snow211115.i3.gz"
+# argument parser
+parser = argparse.ArgumentParser(description='Compute common variables and save them to an HDF5 file.')
+parser.add_argument('--inputfolder', type=str, default="", help='Path to the folder with input files.')
+parser.add_argument('--input', type=str, default="", help='Path to the input file.')
+parser.add_argument('--gcdfile', type=str, help='Path to the GCD file', default="/home/axel/i3/GeoCalibDetectorStatus_2021.Run135903.T00S1.Pass2_V1b_Snow211115.i3.gz")
+parser.add_argument('--outputfile', type=str, default='example_CV.i3.gz', help='Name of the output file')
+parser.add_argument('--pulses_map_name', type=str, default='SRTInIcePulses', help='Name of the pulses map')
+parser.add_argument('--reco_particle_name', type=str, default='MPE_SRTInIcePulses', help='Name of the reconstructed particle')
+parser.add_argument('--subeventstream', type=str, default='InIceSplit', help='Name of the subevent stream')
+parser.add_argument('--bookit', action='store_true', help='Flag to enable booking')
 
-outputname = "test_all_CV.i3.gz"
+args = parser.parse_args()
 
-# settings
-pulses_map_name    = 'CleanedInIcePulses'
-reco_particle_name = 'PoleMuonLlhFit'
-subeventstream = "InIceSplit"
-bookit = False
+# filename is a comma-separated list of files
+inputfolder = args.inputfolder
+input = args.input
+assert input != "" or inputfolder != "", "Need either input or inputfolder"
+assert not(input != "" and inputfolder != ""), "Use either input or inputfolder, not both"
+gcdfile = args.gcdfile
+outputfile = args.outputfile
+pulses_map_name = args.pulses_map_name
+reco_particle_name = args.reco_particle_name
+subeventstream = args.subeventstream
+bookit = args.bookit
+
+# get list of files
+if inputfolder != "":
+    print("Many files")
+    filename_list = glob.glob(inputfolder + '*.i3.gz')
+else:
+    print("Single file")
+    filename_list = [input]
 
 # tray
 tray = I3Tray()
 tray.AddModule("I3Reader", "reader",
-               FilenameList = [gcdfile, filename]
+               FilenameList = [gcdfile] + filename_list,
 )
 
 ##### DIRECT HITS #####
@@ -93,7 +116,7 @@ tray.AddSegment(hit_statistics.I3HitStatisticsCalculatorSegment, 'hs',
 
 # writer, will add 8 new frame objects from the common variables
 # overwrites PoleMuonLlhFitDirectHitsBaseC which was already in frame, and its not the same!! maybe different pulse series?
-tray.Add("I3Writer", "writer", filename = outputname,
+tray.Add("I3Writer", "writer", filename = outputfile,
                Streams = [icetray.I3Frame.TrayInfo, icetray.I3Frame.Simulation,
                         icetray.I3Frame.DAQ, icetray.I3Frame.Physics],
               DropOrphanStreams=[icetray.I3Frame.Geometry,
