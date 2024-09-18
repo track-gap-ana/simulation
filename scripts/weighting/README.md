@@ -7,12 +7,13 @@ Then harvest generators and rescale them, then call weighting module like normal
 
 ```python
 # get infiles and summaryfiles, make sure they are in the same order
-infiles = glob.glob(params["infolder"] + "*/LLP*.i3.gz")[:nfiles]
-countfiles = glob.glob(params["infolder"] + "*/llp_counter.json")[:nfiles]
+infiles = glob.glob(params["infolder"] + "*/LLP*.i3.gz")
+countfiles = glob.glob(params["infolder"] + "*/llp_counter.json")
 
 ############### start weighting ###################
 model = MuonGun.load_model(params["model"])
 
+import llp_simulation.weighting.weighting as weighting
 # get total muons generated from summary files
 tot_mu_generated_list = weighting.get_tot_mu_generated_list(countfiles, key="total")
 # get muongun generator
