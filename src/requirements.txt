@@ -1,2 +1,25 @@
-numpy
+blosc2==2.7.1
+contourpy==1.2.1
+cycler==0.12.1
+fonttools==4.52.4
+kiwisolver==1.4.5
+-e git+ssh://git@github.com/track-gap-ana/simulation.git@1a33f0ec5ae36d5250f056f61f30dbb1b49565fa#egg=llp_simulation&subdirectory=src
+matplotlib==3.9.0
+msgpack==1.1.0
+ndindex==1.8
+numexpr==2.10.1
+numpy==1.26.4
+packaging==24.0
+pandas==2.2.2
+pillow==10.3.0
+py-cpuinfo==9.0.0
+pyparsing==3.1.2
+python-dateutil==2.9.0.post0
+pytz==2024.1
 PyYAML==6.0.1
+scipy==1.14.1
+simweights==0.1.2
+six==1.16.0
+tables==3.10.1
+typing_extensions==4.12.2
+tzdata==2024.1
