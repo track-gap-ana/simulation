@@ -9,3 +9,5 @@ Steps from online to common variables:
 4. CommonVariables
 
 You can find these segments in `segments`.
+
+One should also weight at some point, but original weights are fine as long as you use density.
