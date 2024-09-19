@@ -14,7 +14,7 @@ import argparse
 @icetray.traysegment
 def SRTClean(tray, name,
              input_pulses = "SplitInIcePulses",
-             output_puslses = "SRTInIcePulses",
+             output_pulses = "SRTInIcePulses",
              splitname = "InIceSplit",
              ):
     # Create a SeededRT configuration object with the standard RT settings.
@@ -28,8 +28,8 @@ def SRTClean(tray, name,
 
     # pulse clean
     tray.AddModule('I3SeededRTCleaning_RecoPulseMask_Module', 'North_seededrt',
-        InputHitSeriesMapName  = 'SplitInIcePulses',
-        OutputHitSeriesMapName = 'SRTInIcePulses',
+        InputHitSeriesMapName  = input_pulses,
+        OutputHitSeriesMapName = output_pulses,
         STConfigService        = seededRTConfig,
         SeedProcedure          = 'HLCCoreHits',
         NHitsThreshold         = 2,
