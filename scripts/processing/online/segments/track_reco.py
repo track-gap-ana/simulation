@@ -6,9 +6,12 @@ import icecube.lilliput
 import icecube.lilliput.segments
 
 
+from icecube.phys_services.which_split import which_split
+
 @icetray.traysegment
 def TrackReco(tray, name,
               pulses,
+              splitname="InIceSplit",
               ):
     ##################################################################
     # Run improved Linefit
@@ -17,7 +20,8 @@ def TrackReco(tray, name,
     tray.AddSegment(linefit.simple,
                     "linefit_improved",
                     inputResponse = pulses,
-                    fitName = fitname_linefit)
+                    fitName = fitname_linefit,
+                    If = which_split(split_name=splitname))
 
     ##################################################################
     # Run SPE1st
@@ -27,7 +31,8 @@ def TrackReco(tray, name,
             fitname=fitname_spe,
             domllh="SPE1st",
             pulses=pulses,
-            seeds=[fitname_linefit])
+            seeds=[fitname_linefit],
+            If = which_split(split_name=splitname))
 
     ##################################################################
     # Run MPE
@@ -37,4 +42,5 @@ def TrackReco(tray, name,
             fitname=fitname_mpe,
             domllh="MPE",
             pulses=pulses,
-            seeds=[fitname_spe])
+            seeds=[fitname_spe],
+            If = which_split(split_name=splitname))

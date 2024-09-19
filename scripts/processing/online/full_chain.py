@@ -55,7 +55,7 @@ cleaned_pulses = "SRTInIcePulses"
 uncleaned_pulses = "SplitInIcePulses"
 subeventstream = "InIceSplit"
 reco_particle_name = "MPE_"+cleaned_pulses
-bookit = False
+bookit = True
 
 # for each file
 for inputfile in inputfile_list:
