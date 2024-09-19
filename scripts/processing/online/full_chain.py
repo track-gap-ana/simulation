@@ -3,9 +3,9 @@ from icecube import icetray, dataio, offline_filterscripts
 from icecube.offline_filterscripts import read_superdst_files
 from icecube.icetray import I3Tray
 
-from .segments.srt_clean import SRTClean
-from .segments.track_reco import TrackReco
-from .segments.common_variables import ComputeAllCV
+from segments.srt_clean import SRTClean
+from segments.track_reco import TrackReco
+from segments.common_variables import ComputeAllCV
 
 import argparse
 import glob
