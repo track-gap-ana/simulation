@@ -12,6 +12,8 @@ def ComputeAllCV(tray, name,
                  subeventstream,
                  bookit,
                  ):
+    
+    tableio_keys_to_book = []
     ##### DIRECT HITS #####
     dh_defs = direct_hits.get_default_definitions()
 
@@ -20,6 +22,7 @@ def ComputeAllCV(tray, name,
     for dh_def in dh_defs:
         print(dh_def)
 
+    tableio_keys_to_book += \
     tray.AddSegment(direct_hits.I3DirectHitsCalculatorSegment, 'dh',
         DirectHitsDefinitionSeries       = dh_defs,
         PulseSeriesMapName               = pulses_map_name,
@@ -31,6 +34,7 @@ def ComputeAllCV(tray, name,
 
     ##### HIT MULTIPLICITY #####
     print('Calculating hit multiplicity for "%s" pulses' % (pulses_map_name))
+    tableio_keys_to_book += \
     tray.AddSegment(hit_multiplicity.I3HitMultiplicityCalculatorSegment, 'hm',
         PulseSeriesMapName                = pulses_map_name,
         OutputI3HitMultiplicityValuesName = 'HitMultiplicityValues',
@@ -45,6 +49,7 @@ def ComputeAllCV(tray, name,
             'pulses' %\
             (pulses_map_name))
 
+    tableio_keys_to_book += \
     tray.AddSegment(time_characteristics.I3TimeCharacteristicsCalculatorSegment, 'timec',
         PulseSeriesMapName                     = pulses_map_name,
         OutputI3TimeCharacteristicsValuesName = reco_particle_name+'TimeCharacteristics',
@@ -60,6 +65,7 @@ def ComputeAllCV(tray, name,
             'radius.'%\
             (pulses_map_name, reco_particle_name, track_cylinder_radius))
 
+    tableio_keys_to_book += \
     tray.AddSegment(track_characteristics.I3TrackCharacteristicsCalculatorSegment, 'trackc',
         PulseSeriesMapName                     = pulses_map_name,
         ParticleName                           = reco_particle_name,
@@ -71,6 +77,7 @@ def ComputeAllCV(tray, name,
 
     ##### HIT STATISTICS #####
     print('Calculating hit statistics for "%s" pulses' % (pulses_map_name))
+    tableio_keys_to_book += \
     tray.AddSegment(hit_statistics.I3HitStatisticsCalculatorSegment, 'hs',
         PulseSeriesMapName              = pulses_map_name,
         OutputI3HitStatisticsValuesName = 'HitStatisticsValues',
@@ -78,3 +85,5 @@ def ComputeAllCV(tray, name,
         COGBookRefFrame                 = dataclasses.converters.I3PositionConverter.BookRefFrame.Sph,
         If = which_split(subeventstream),
     )
+
+    return tableio_keys_to_book
