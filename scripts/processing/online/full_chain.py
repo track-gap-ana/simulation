@@ -84,6 +84,15 @@ for inputfile in inputfile_list:
                     bookit = bookit,
                     )
     # save files
-    tray.Add("I3Writer", "writer", filename=outname)
+    tray.Add("I3Writer", "writer", filename=outname,
+            Streams = [icetray.I3Frame.TrayInfo,
+                       icetray.I3Frame.Simulation,
+                       icetray.I3Frame.DAQ,
+                       icetray.I3Frame.Physics],
+            DropOrphanStreams=[icetray.I3Frame.Geometry,
+                            icetray.I3Frame.Calibration,
+                            icetray.I3Frame.DetectorStatus]
+    )
+
     # execute
     tray.Execute()

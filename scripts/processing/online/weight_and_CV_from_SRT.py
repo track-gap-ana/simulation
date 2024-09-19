@@ -28,41 +28,68 @@ def add_args(parser):
         type=int, default=-1, dest="nfiles",
         help="How many i3 file(s) to process. -1 does all.")
 
-    parser.add_argument('-o', "--output", action="store",
-        type=str, dest="outputname",
-        help="output .i3 name")
+    parser.add_argument('-o', "--outputfolder", action="store",
+        type=str, dest="outfolder",
+        help="output foldername")
 
 # Get params from parser
 parser = argparse.ArgumentParser(description="Weight LLP folder")
 add_args(parser)
 params = vars(parser.parse_args())  # dict()
 
-inputfiles = glob.glob(params["infolder"]+"/*.i3*")[:params["nfiles"]]
+# create outfolder if doesn't exi
+if params["outfolder"][-1] != "/":
+    params["outfolder"] += "/"
+if params["infolder"][-1] != "/":
+    params["infolder"] += "/"
+
+# create model dir if it does not exist
+if not os.path.exists(params["outfolder"]):
+    os.makedirs(params["outfolder"])
+# get list of inputfiles
+inputfile_list = glob.glob(params["infolder"] + "*.i3*")[:params["nfiles"]]
 
 cleaned_pulses = "SRTInIcePulses"
 subeventstream = "InIceSplit"
 reco_particle_name = "MPE_"+cleaned_pulses
-bookit = False
+bookit = True
 
-tray = I3Tray()
 
-# read in the files
-tray.Add("I3Reader", "reader",
-         FilenameList=inputfiles)
+# for each file
+for inputfile in inputfile_list:
+    # create output filename
+    basename_out = "CV_" + os.path.basename(inputfile)
+    outname = params["outfolder"] + basename_out
+    
+    print("Processing %s to %s" % (inputfile, outname))
+    
+    tray = I3Tray()
 
-# track reconstruction (needed for CV)
-tray.AddSegment(TrackReco, "track_reco", pulses=cleaned_pulses)
+    # read in the files
+    tray.Add("I3Reader", "reader",
+            Filename=inputfile)
 
-# compute CommonVariables
-tableio_keys_to_book = tray.AddSegment(ComputeAllCV, "compute_CV",
-                 pulses_map_name = cleaned_pulses,
-                 reco_particle_name = reco_particle_name,
-                 subeventstream = subeventstream,
-                 bookit = bookit,
-                 )
+    # track reconstruction (needed for CV)
+    tray.AddSegment(TrackReco, "track_reco", pulses=cleaned_pulses)
 
-# write file
-tray.Add("I3Writer", "writer", filename = params["outputname"])
+    # compute CommonVariables
+    tray.AddSegment(ComputeAllCV, "compute_CV",
+                    pulses_map_name = cleaned_pulses,
+                    reco_particle_name = reco_particle_name,
+                    subeventstream = subeventstream,
+                    bookit = bookit,
+                    )
 
-# execute
-tray.Execute()
+    # save files
+    tray.Add("I3Writer", "writer", filename=outname,
+            Streams = [icetray.I3Frame.TrayInfo,
+                       icetray.I3Frame.Simulation,
+                       icetray.I3Frame.DAQ,
+                       icetray.I3Frame.Physics],
+            DropOrphanStreams=[icetray.I3Frame.Geometry,
+                            icetray.I3Frame.Calibration,
+                            icetray.I3Frame.DetectorStatus]
+    )
+    
+    # execute
+    tray.Execute()
