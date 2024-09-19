@@ -31,7 +31,10 @@ def add_args(parser):
     parser.add_argument('-o', "--outputfolder", action="store",
         type=str, dest="outfolder",
         help="output foldername")
-
+    
+    parser.add_argument('-g', '--gcdfile', action="store",
+        type=str, dest="gcdfile",
+        help="gcdfile")
 # Get params from parser
 parser = argparse.ArgumentParser(description="Weight LLP folder")
 add_args(parser)
@@ -67,7 +70,7 @@ for inputfile in inputfile_list:
 
     # read in the files
     tray.Add("I3Reader", "reader",
-            Filename=inputfile)
+             FilenameList = [params["gcdfile"], inputfile])
 
     # track reconstruction (needed for CV)
     tray.AddSegment(TrackReco, "track_reco", pulses=cleaned_pulses)
