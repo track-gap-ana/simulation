@@ -11,3 +11,9 @@ Steps from online to common variables:
 You can find these segments in `segments`.
 
 One should also weight at some point, but original weights are fine as long as you use density.
+
+Then there are scripts called XXX_i3_to_hdf5.py which read in .i3 files and produce an hdf5 file that can be used for plotting.
+
+The plotting is done with plot_XXX_hdf5.py. Remember that CORSIKA weighting needs # of files used.
+
+The script utils.py contains some functions that are used by either of both of LLP (MuonGun) and CORSIKA, such as MMCTrackList info extractor, plot scripts, etc.

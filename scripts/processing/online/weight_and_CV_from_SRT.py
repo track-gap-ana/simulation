@@ -40,7 +40,7 @@ parser = argparse.ArgumentParser(description="Weight LLP folder")
 add_args(parser)
 params = vars(parser.parse_args())  # dict()
 
-# create outfolder if doesn't exi
+# create outfolder if doesn't exist
 if params["outfolder"][-1] != "/":
     params["outfolder"] += "/"
 if params["infolder"][-1] != "/":
