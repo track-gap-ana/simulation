@@ -8,6 +8,7 @@
 import argparse
 import glob
 import os
+import json
 
 import icecube
 from icecube import icetray, dataio
@@ -50,17 +51,25 @@ i3_json_dict = {}
 for filename in inputfiles:
     # get runid
     f = dataio.I3File(filename)
+
     fr = f.pop_frame(icetray.I3Frame.Stream('Q'))
+    while "I3EventHeader" not in fr:
+        fr = f.pop_frame(icetray.I3Frame.Stream('Q'))
     header = fr["I3EventHeader"]
     f.close()
     
     # get summary file for a runid
     runid = str(header.run_id)
-    jobid = int(runid[:-4])
-    print(runid)
-    print(jobid)
-    json_file = glob.glob(params["basefolder"] + "*" + str(jobid) + "*/summary.json")
+    jobid = int(runid[-4:])
+
+    json_file = glob.glob(params["basefolder"] + "*." + str(jobid) + "/summary.json")
+
     print("Filename and json file")
-    print(filename)
+    print(runid)
+#    print(filename)
     print(json_file)
-    
+    i3_json_dict[filename] = json_file
+
+
+with open(params["outfile"],"w") as outfile:
+    json.dump(i3_json_dict, outfile)
