@@ -6,7 +6,7 @@ from icecube.icetray import I3Tray
 from segments.srt_clean import SRTClean
 from segments.track_reco import TrackReco
 from segments.common_variables import ComputeAllCV
-
+from segments.weighting import LLPWeighting
 import argparse
 import glob
 import os
@@ -28,6 +28,14 @@ def add_args(parser):
     parser.add_argument('-o', "--outputfolder", action="store",
         type=str, dest="outfolder",
         help="output foldername")
+    
+    parser.add_argument("-l", "--llp", action="store_true",
+                        type=bool, default=False, dest="llp",
+                        help="Do muongun weighting (for LLP sim). Leave false for CORSIKA. Default is False.")
+
+    parser.add_argument('-j', '--summaryjsonmap', action="store",
+        type=str, dest="jsonmap",
+        help="Map from i3 file to summary file. Needed for LLP weighting.")
     
     parser.add_argument('-g', '--gcdfile', action="store",
         type=str, dest="gcdfile",
@@ -72,6 +80,11 @@ for inputfile in inputfile_list:
                     input_files = [inputfile],
                     input_gcd = params["gcdfile"],
     )
+    # weight if muongun (LLP)
+    if params["llp"]:
+        tray.AddSegment(LLPWeighting, 'weighting',
+                        inputfile_list, # so the weight is now for the whole sample
+                        params["jsonmap"])
     # SRT clean pulses
     tray.AddSegment(SRTClean, "srt_cleaning", input_pulses=uncleaned_pulses, output_pulses=cleaned_pulses)
     # track reconstruction (needed for CV)
