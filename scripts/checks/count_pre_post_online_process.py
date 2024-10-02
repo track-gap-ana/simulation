@@ -14,18 +14,22 @@ class Counter(icetray.I3Module):
     def Configure(self):
         self.nevents = 0
         self.passed = 0
+        self.hit_lengths = []
         
     def DAQ(self, frame):
         self.nevents += 1
         # Require I3SuperDST, I3EventHeader, and DSTTriggers; delete the rest
         if (frame.Has("I3SuperDST") and frame.Has("DSTTriggers") and frame.Has("I3EventHeader")):
             self.passed += 1
-        
+        elif not frame.Has("LLPInfo"):
+            self.hit_lengths.append(len(frame["I3SuperDST"]))
         return True
 
     def Finish(self):
         print("Events: ", self.nevents)
         print("Passed: ", self.passed)
+        print("Hit lengths: ", self.hit_lengths)
+        
 
 #### TRIGGER ####
 
