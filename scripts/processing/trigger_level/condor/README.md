@@ -1,0 +1,1 @@
+Will remove bad files from dataset, run online base processing, and then SRT the pulses. This is instead of running the full online processing chain, and can be used to create training data for a NN e.g.

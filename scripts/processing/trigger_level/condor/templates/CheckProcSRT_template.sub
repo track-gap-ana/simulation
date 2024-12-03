@@ -1,0 +1,16 @@
+executable = job.sh
+
+log = <logscratchdir>job.log.$(ClusterId).$(ProcId)
+output = <outputdir>job.out.$(ClusterId).$(ProcId)
+error = <errordir>job.err.$(ClusterId).$(ProcId)
+notification = never
+
++FileSystemDomain = "foo"
+transfer_input_files = <checkscript>,<procscript>,<srtscript>
+
+request_cpus = <ncpus>
+request_memory = <memory>
+request_disk = <disk>
+request_gpus = <ngpus>
+
+queue 1
