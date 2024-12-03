@@ -1,0 +1,3 @@
+There was a bug in my old custom PROPOSAL that didn't turn off the LLP xsec after exiting the detector, leading to a majority of the LLPs being produced after the detector. See plots in old vs. new PROPOSAL folders to see the fix.
+
+The error had to do with integration bounds. Check commit notes in icetray/axelpo-main to see exactly what I did but basically the bounds weren't set equal when we wanted to turn off the cross section.
