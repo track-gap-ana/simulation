@@ -9,7 +9,7 @@ import pandas as pd
 
 # desired mean free path
 detector_length = 1000  # meters
-desired_mean_free_path = 10 * detector_length  # meters
+desired_mean_free_path = 5 * detector_length  # meters
 
 # open DLS cross sections
 path_to_cross_section_tables = "cross_section_tables/"
@@ -26,7 +26,7 @@ for file in cross_section_files:
     df = pd.read_csv(absolute_path + file, header=None)
     df = df.set_index(0)
     # get the xsec for 1 TeV
-    xsec_1tev = df.loc[1000].values[0]
+    xsec_1tev = df.loc[700].values[0]
     # get recommended bias
     rec_bias = bias_recommender(xsec_1tev, desired_mean_free_path)
     # add to dict
@@ -41,5 +41,5 @@ df_bias = df_bias.sort_values(by="mass")
 print(df_bias)
 # save df to file
 path = os.path.dirname(__file__)
-path = os.path.join(path, "bias_recommendations.csv")
+path = os.path.join(path, "bias_recommendations_5lambda_700GeV.csv")
 df_bias.to_csv(path, index=False)
