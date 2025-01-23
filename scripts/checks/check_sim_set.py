@@ -10,6 +10,7 @@ from icecube import icetray, dataio
 parser = argparse.ArgumentParser(description='Check for corrupt files in the simulation set.')
 parser.add_argument('-f', '--folder', type=str, help='Path to the folder containing the simulations')
 parser.add_argument('--remove-bad', dest="remove_bad", action='store_true', default=False, help='Remove bad files?')
+parser.add_argument('-g', '--glob-string', type=str, dest="glob_string", default = '*/*.i3.gz', help='What to search for in the folder.')
 
 args = parser.parse_args()
 
@@ -19,7 +20,7 @@ if args.folder[-1] != '/':
 print("Checking folder:", args.folder)
 
 # files
-filelist = glob.glob(args.folder + '*/*.i3.gz')
+filelist = glob.glob(args.folder + args.glob_string)
 print("Folder contains %i files."%len(filelist))
 
 # check read access
