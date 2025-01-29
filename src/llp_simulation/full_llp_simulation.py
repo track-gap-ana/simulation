@@ -9,8 +9,7 @@ import icecube.dataclasses
 import icecube.dataio
 import icecube.phys_services
 
-from icecube.simprod.util import ReadI3Summary, WriteI3Summary
-from icecube.simprod.util import CombineHits, DrivingTime, SetGPUEnvironmentVariables
+from icecube.simprod.util import SetGPUEnvironmentVariables
 
 from icecube.icetray import I3Tray, I3Units
 from icecube.simprod.util import BasicCounter
