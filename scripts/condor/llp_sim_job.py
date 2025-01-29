@@ -80,4 +80,5 @@ summary = RunI3Tray(params, llp_simulation.full_llp_simulation.configure_tray, "
                     seed=params['seed'],
                     #nstreams=params['nproc'], # removed in commit https://github.com/icecube/icetray/commit/146750ffe132d617d945c4cff6801b28cea2f8d6 
                     streamnum=params['procnum'],
-                    usegslrng=params['usegslrng'])
+                    #usegslrng=params['usegslrng'],
+                    )
