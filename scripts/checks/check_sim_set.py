@@ -52,6 +52,9 @@ for i, file in enumerate(filelist):
 
 # write bad files to a textfile
 print("Bad files:", badfiles)
+if args.glob_string != '*/*.i3.gz':
+    print("NOT DEFAULT GLOB STRING! DONT DELETE STUFF CUS YOU MIGHT DELTE WHIOLE FOLDER")
+    exit()
 if args.remove_bad:
     if badfiles == []:
         print("No bad files found.")
